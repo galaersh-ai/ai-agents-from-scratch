@@ -1,11 +1,11 @@
-## Graph of Thought: Motivation analysis of a person
+## Граф рассуждений: Анализ мотивации человека
 
-Graph of Thought keeps multiple reasoning strands alive and combines them.
-Unlike Tree of Thought, weaker branches are not automatically discarded.
+Граф рассуждений сохраняет несколько нитей рассуждений активными и объединяет их.
+В отличие от Дерева рассуждений, более слабые ветки не отбрасываются автоматически.
 
 ---
 
-### Visual graph shape
+### Визуальная форма графа
 
 ```text
                     [root: behavior]
@@ -30,84 +30,84 @@ Unlike Tree of Thought, weaker branches are not automatically discarded.
 
 ---
 
-### Why GoT gives a different class of answer
+### Почему GoT даёт другой класс ответов
 
-Tree of Thought often picks one winner and drops alternatives.
-Graph of Thought does the opposite: it reuses alternatives through graph operations.
+Дерево рассуждений часто выбирает одного победителя и отбрасывает альтернативы.
+Граф рассуждений делает противоположное: он повторно использует альтернативы через операции с графом.
 
-In this example:
+В этом примере:
 
-- **Branch:** Build four competing hypotheses.
-- **Score:** Rank them, but keep all in the graph.
-- **Contrast:** Turn disagreement into a new diagnostic signal.
-- **Refine:** Improve weak branches using strong branches.
-- **Aggregate:** Merge multiple sources into syntheses.
-- **Conclude:** Use all strands for a final integrated view.
-
----
-
-### GoT operations and what they unlock
-
-| Operation | What it reveals in this example |
-|---|---|
-| Contrast | Productive tension between hypotheses becomes explicit evidence |
-| Refine | Weak hypotheses are rescued instead of discarded |
-| Aggregate | Different strands are synthesized into richer intermediate views |
-| Conclude | Final answer includes contradictions and rescued insights |
+- **Ветвление:** Построение четырёх конкурирующих гипотез.
+- **Оценка:** Ранжирование, но сохранение всех в графе.
+- **Контраст:** Превращение расхождений в новый диагностический сигнал.
+- **Уточнение:** Улучшение слабых веток с помощью сильных.
+- **Обобщение:** Слияние нескольких источников в синтезы.
+- **Заключение:** Использование всех нитей для финальной интегрированной картины.
 
 ---
 
-### Core takeaway
+### Операции GoT и что они открывают
 
-Tree of Thought asks: **Which branch wins?**  
-Graph of Thought asks: **How can multiple branches interact to produce a better final model?**
-
-That is why GoT can produce answers that are not just "better scoring", but structurally more complete.
+| Операция | Что она раскрывает в этом примере |
+|----------|-----------------------------------|
+| Контраст | Продуктивное напряжение между гипотезами становится явным доказательством |
+| Уточнение | Слабые гипотезы спасаются вместо отбрасывания |
+| Обобщение | Различные нити синтезируются в более богатые промежуточные картины |
+| Заключение | Финальный ответ включает противоречия и спасённые выводы |
 
 ---
 
-### When to use GoT in real work
+### Ключевой вывод
 
-Use Graph of Thought when multiple perspectives must stay connected and influence each other.
+Дерево рассуждений спрашивает: **Какая ветка побеждает?**  
+Граф рассуждений спрашивает: **Как различные ветки могут взаимодействовать для создания лучшей финальной модели?**
 
-#### System admin mental model
+Именно поэтому GoT может генерировать ответы, которые не просто «лучше по оценке», но структурно более полные.
 
-A regional outage affects only some users and symptoms conflict across tools.
+---
 
-- **Branches:** network routing issue, database replication lag, or auth-service dependency timeout.
-- **Contrast:** Compare branches that disagree (for example "network is healthy" vs "timeouts are network-shaped").
-- **Refine:** Update weaker explanations using fresh telemetry and cross-team notes.
-- **Aggregate:** Build a combined incident model that includes infra + app interactions.
-- **Conclude:** Coordinate a staged mitigation plan that addresses multiple contributing factors.
+### Когда использовать GoT в реальной работе
 
-Why GoT fits: real incidents are often multi-causal, and discarding "weaker" signals too early can hide the true failure chain.
+Используйте Граф рассуждений, когда несколько перспектив должны оставаться связанными и влиять друг на друга.
 
-#### Developer mental model
+#### Ментальная модель системного администратора
 
-A flaky end-to-end test fails unpredictably in CI but rarely locally.
+Региональное падение влияет только на часть пользователей, а симптомы конфликтуют между инструментами.
 
-- **Branches:** race condition, clock skew, test data coupling, or external API nondeterminism.
-- **Contrast:** Pair hypotheses against each other using failure traces and timestamps.
-- **Refine:** Improve weak hypotheses with strong evidence from logs and reruns.
-- **Aggregate:** Build an integrated explanation (for example timing bug + shared fixture contamination).
-- **Conclude:** Produce a fix plan that combines code changes, test isolation, and CI environment guards.
+- **Ветки:** Проблема сетевой маршрутизации, задержка репликации БД или таймаут зависимости от auth-сервиса.
+- **Контраст:** Сравнение веток, которые расходятся (например, «сеть в порядке» vs «таймауты имеют сетевую природу»).
+- **Уточнение:** Обновление более слабых объяснений с использованием свежей телеметрии и межкомандных заметок.
+- **Обобщение:** Построение комбинированной модели инцидента, включающей взаимодействия инфры + приложения.
+- **Заключение:** Координация поэтапного плана смягчения, решающего несколько вносящих вклад факторов.
 
-Why GoT fits: debugging often needs interaction between hypotheses, not a single winner picked too early.
+Почему GoT подходит: Реальные инциденты часто многочинные, и слишком раннее отбрасывание «более слабых» сигналов может скрыть истинную цепочку падений.
 
-#### AI agent creator mental model
+#### Ментальная модель разработчика
 
-You are designing a research-grade planning agent for complex tasks (code + docs + infra).
+Нестабильный e2e-тест падает непредсказуемо в CI, но редко локально.
 
-- **Branches:** different task decompositions and tool sequences.
-- **Contrast:** Let plans critique each other to expose hidden assumptions.
-- **Refine:** Improve weaker plans using strong-plan insights.
-- **Aggregate:** Merge complementary subplans into one robust strategy.
-- **Conclude:** Execute with richer context and keep traceable reasoning artifacts.
+- **Ветки:** Гонка данных, смещение часов, связанность тестовых данных или недетерминизм внешнего API.
+- **Контраст:** Сопоставление гипотез друг с другом с использованием трассировок падений и временных меток.
+- **Уточнение:** Улучшение слабых гипотез сильными доказательствами из логов и перезапусков.
+- **Обобщение:** Построение интегрированного объяснения (например, ошибка тайминга + заражение общим фикстурным файлом).
+- **Заключение:** Формирование плана исправления, сочетающего изменения кода, изоляцию тестов и ограничители среды CI.
 
-Why GoT fits: agents handling ambiguous, high-stakes tasks benefit from preserving and recombining reasoning rather than pruning early.
+Почему GoT подходит: Отладка часто требует взаимодействия между гипотезами, а не одного победителя, выбранного слишком рано.
 
-GoT is strongest when:
+#### Ментальная модель создателя AI-агентов
 
-- the problem is ambiguous,
-- weaker signals may become valuable after refinement,
-- and you want a final answer that preserves contradictions instead of hiding them.
+Вы проектируете исследовательский планирующий агент для сложных задач (код + документация + инфраструктура).
+
+- **Ветки:** Различные декомпозиции задач и последовательности инструментов.
+- **Контраст:** Позвольте планам критиковать друг друга для обнажения скрытых допущений.
+- **Уточнение:** Улучшение более слабых планов с использованием выводов из сильных.
+- **Обобщение:** Слияние дополнительных подпланов в одну устойчивую стратегию.
+- **Заключение:** Исполнение с более богатым контекстом и сохранение отслеживаемых артефактов рассуждений.
+
+Почему GoT подходит: Агенты, обрабатывающие неоднозначные задачи с высокими ставками, выигрывают от сохранения и рекомбинации рассуждений, а не от ранней обрезки.
+
+GoT наиболее силён когда:
+
+- задача неоднозначна,
+- более слабые сигналы могут стать ценными после уточнения,
+- и Вы хотите финальный ответ, сохраняющий противоречия, а не скрывающий их.

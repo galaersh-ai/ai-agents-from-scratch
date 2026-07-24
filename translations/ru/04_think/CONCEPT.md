@@ -1,14 +1,14 @@
-# Concept: Reasoning & Problem-Solving Agents
+# Концепция: Рассуждающие агенты и решение задач
 
-## Overview
+## Обзор
 
-This example demonstrates how to configure an LLM as a **reasoning agent** capable of analytical thinking and quantitative problem-solving. It shows the bridge between simple text generation and complex cognitive tasks.
+Этот пример демонстрирует, как настроить LLM как **рассуждающего агента**, способного к аналитическому мышлению и решению количественных задач. Он показывает мост между простой генерацией текста и сложными когнитивными задачами.
 
-## What is a Reasoning Agent?
+## Что такое рассуждающий агент?
 
-A **reasoning agent** is an LLM configured to perform logical analysis, mathematical computation, and multi-step problem-solving through careful system prompt design.
+**Рассуждающий агент** — это LLM, настроенная для выполнения логического анализа, математических вычислений и многошагового решения задач через тщательное проектирование системного промпта.
 
-### Human Analogy
+### Человеческая аналогия
 
 ```
 Regular Chat                    Reasoning Agent
@@ -18,11 +18,11 @@ Regular Chat                    Reasoning Agent
                               and compute exact answers."
 ```
 
-## The Reasoning Challenge
+## Проблема рассуждений
 
-### Why Reasoning is Hard for LLMs
+### Почему рассуждения сложны для LLM
 
-LLMs are trained on text prediction, not explicit reasoning:
+LLM обучены на предсказании текста, а не на явных рассуждениях:
 
 ```
 ┌───────────────────────────────────────┐
@@ -37,11 +37,11 @@ LLMs are trained on text prediction, not explicit reasoning:
 └───────────────────────────────────────┘
 ```
 
-However, they can learn reasoning patterns from training data and be guided by system prompts.
+Тем не менее, они могут выучить паттерны рассуждений из обучающих данных и быть направлены системными промптами.
 
-## Reasoning Through System Prompts
+## Рассуждения через системные промпты
 
-### Configuration Pattern
+### Паттерн конфигурации
 
 ```
 ┌─────────────────────────────────────────┐
@@ -56,28 +56,28 @@ However, they can learn reasoning patterns from training data and be guided by s
    Reasoning Behavior
 ```
 
-### Types of Reasoning Tasks
+### Типы задач рассуждений
 
-**Quantitative Reasoning (this example):**
+**Количественные рассуждения (этот пример):**
 ```
 Problem → Count entities → Calculate → Convert units → Answer
 ```
 
-**Logical Reasoning:**
+**Логические рассуждения:**
 ```
 Premises → Apply rules → Deduce conclusions → Answer
 ```
 
-**Analytical Reasoning:**
+**Аналитические рассуждения:**
 ```
 Data → Identify patterns → Form hypothesis → Conclude
 ```
 
-## How LLMs "Reason"
+## Как LLM «рассуждают»
 
-### Pattern Matching vs. True Reasoning
+### Сопоставление паттернов vs. Истинные рассуждения
 
-LLMs don't reason like humans, but they can:
+LLM не рассуждают как люди, но они могут:
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -97,7 +97,7 @@ LLMs don't reason like humans, but they can:
 └─────────────────────────────────────────────┘
 ```
 
-### The Reasoning Process
+### Процесс рассуждений
 
 ```
 Input: Complex Word Problem
@@ -121,9 +121,9 @@ Input: Complex Word Problem
      Final Answer
 ```
 
-## Problem Complexity Hierarchy
+## Иерархия сложности задач
 
-### Levels of Reasoning Difficulty
+### Уровни сложности рассуждений
 
 ```
 Easy                                        Hard
@@ -139,9 +139,9 @@ Medium:  "If 3 apples cost $2 each, what's the total?"
 Hard:    "Count family members with complex relationships"
 ```
 
-### This Example's Complexity
+### Сложность этого примера
 
-The potato problem is **highly complex**:
+Задача с картофелем **очень сложная**:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -157,9 +157,9 @@ The potato problem is **highly complex**:
 └─────────────────────────────────────────┘
 ```
 
-## Limitations of Pure LLM Reasoning
+## Ограничения чистых LLM-рассуждений
 
-### Why This Approach Has Issues
+### Почему этот подход имеет проблемы
 
 ```
 ┌────────────────────────────────────┐
@@ -176,66 +176,66 @@ The potato problem is **highly complex**:
 └────────────────────────────────────┘
 ```
 
-### Common Failure Modes
+### Типичные режимы сбоев
 
-**1. Counting Errors:**
+**1. Ошибки подсчёта:**
 ```
 Problem: "Count 15 people with complex relationships"
 LLM: "14" or "16" (off by one)
 ```
 
-**2. Arithmetic Mistakes:**
+**2. Арифметические ошибки:**
 ```
 Problem: "13 adults × 1.5 + 3 kids × 0.5"
 LLM: May get intermediate steps wrong
 ```
 
-**3. Lost Context:**
+**3. Потеря контекста:**
 ```
 Problem: Multi-step with many facts
 LLM: Forgets earlier information
 ```
 
-## Improving Reasoning: Evolution Path
+## Улучшение рассуждений: Путь эволюции
 
-### Level 1: Pure Prompting (This Example)
+### Уровень 1: Чистый промптинг (этот пример)
 ```
 User → LLM → Answer
        ↑
    System Prompt
 ```
 
-**Limitations:**
-- All reasoning internal to LLM
-- No verification
-- No tools
-- Hidden process
+**Ограничения:**
+- Все рассуждения внутри LLM
+- Нет верификации
+- Нет инструментов
+- Скрытый процесс
 
-### Level 2: Chain-of-Thought
+### Уровень 2: Цепочка рассуждений
 ```
 User → LLM → Show Work → Answer
        ↑
    "Explain your reasoning"
 ```
 
-**Improvements:**
-- Visible reasoning steps
-- Can catch some errors
-- Still no tools
+**Улучшения:**
+- Видимые шаги рассуждений
+- Можно поймать некоторые ошибки
+- Всё ещё нет инструментов
 
-### Level 3: Tool-Augmented (simple-agent)
+### Уровень 3: С инструментами (simple-agent)
 ```
 User → LLM ⟷ Tools → Answer
        ↑    (Calculator)
    System Prompt
 ```
 
-**Improvements:**
-- External computation
-- Reduced errors
-- Verifiable steps
+**Улучшения:**
+- Внешние вычисления
+- Меньше ошибок
+- Верифицируемые шаги
 
-### Level 4: ReAct Pattern (react-agent)
+### Уровень 4: Паттерн ReAct (react-agent)
 ```
 User → LLM → Think → Act → Observe
        ↑      ↓      ↓      ↓
@@ -245,92 +245,92 @@ User → LLM → Think → Act → Observe
        └───────────Iterate──┘
 ```
 
-**Best approach:**
-- Explicit reasoning loop
-- Tool use at each step
-- Self-correction possible
+**Лучший подход:**
+- Явный цикл рассуждений
+- Использование инструментов на каждом шаге
+- Возможна самокоррекция
 
-## System Prompt Design for Reasoning
+## Проектирование системного промпта для рассуждений
 
-### Key Elements
+### Ключевые элементы
 
-**1. Role Definition:**
+**1. Определение роли:**
 ```
 "You are an expert logical and quantitative reasoner"
 ```
-Sets the mental framework.
+Устанавливает ментальную рамку.
 
-**2. Task Specification:**
+**2. Спецификация задачи:**
 ```
 "Analyze real-world word problems involving..."
 ```
-Defines the problem domain.
+Определяет область задач.
 
-**3. Output Format:**
+**3. Формат вывода:**
 ```
 "Return the correct final number as a single value"
 ```
-Controls response structure.
+Контролирует структуру ответа.
 
-### Design Patterns
+### Паттерны проектирования
 
-**Pattern A: Direct Answer (This Example)**
+**Паттерн A: Прямой ответ (этот пример)**
 ```
 Prompt: [Problem]
 Output: [Number]
 ```
-Pros: Concise, fast
-Cons: No insight into reasoning
+Плюсы: Краткий, быстрый
+Минусы: Нет понимания рассуждений
 
-**Pattern B: Show Work**
+**Паттерн B: Показать работу**
 ```
 Prompt: [Problem] "Show your steps"
 Output: Step 1: ... Step 2: ... Answer: [Number]
 ```
-Pros: Transparent, debuggable
-Cons: Longer, may still have errors
+Плюсы: Прозрачный, отлаживаемый
+Минусы: Длиннее, всё ещё могут быть ошибки
 
-**Pattern C: Self-Verification**
+**Паттерн C: Самоверификация**
 ```
 Prompt: [Problem] "Solve, then verify"
 Output: Solution + Verification + Final Answer
 ```
-Pros: More reliable
-Cons: Slower, uses more tokens
+Плюсы: Надёжнее
+Минусы: Медленнее, больше токенов
 
-## Real-World Applications
+## Практические применения
 
-### Use Cases for Reasoning Agents
+### Случаи использования рассуждающих агентов
 
-**1. Data Analysis:**
+**1. Анализ данных:**
 ```
 Input: Dataset summary
 Task: Compute statistics, identify trends
 Output: Numerical insights
 ```
 
-**2. Planning:**
+**2. Планирование:**
 ```
 Input: Goal + constraints
 Task: Reason about optimal sequence
 Output: Action plan
 ```
 
-**3. Decision Support:**
+**3. Поддержка принятия решений:**
 ```
 Input: Options + criteria
 Task: Evaluate and compare
 Output: Recommended choice
 ```
 
-**4. Problem Solving:**
+**4. Решение задач:**
 ```
 Input: Complex scenario
 Task: Break down and solve
 Output: Solution
 ```
 
-## Comparison: Different Agent Types
+## Сравнение: Разные типы агентов
 
 ```
                   Reasoning  Tools  Memory  Multi-turn
@@ -343,26 +343,26 @@ memory-agent.js       ✓        ✓      ✓        ✓
 react-agent.js        ✓✓       ✓      ~        ✓
 ```
 
-Legend:
-- ✗ = Not present
-- ~ = Limited/implicit
-- ✓ = Present
-- ✓✓ = Advanced/explicit
+Легенда:
+- ✗ = Отсутствует
+- ~ = Ограниченное/неявное
+- ✓ = Присутствует
+- ✓✓ = Продвинутое/явное
 
-## Key Takeaways
+## Ключевые выводы
 
-1. **System prompts enable reasoning**: Proper configuration transforms an LLM into a reasoning agent
-2. **Limitations exist**: Pure LLM reasoning is prone to errors on complex problems
-3. **Tools help**: External computation (calculators, etc.) improves accuracy
-4. **Iteration matters**: Multi-step reasoning patterns (like ReAct) work better
-5. **Transparency is valuable**: Seeing the reasoning process helps debug and verify
+1. **Системные промпты включают рассуждения**: Правильная конфигурация превращает LLM в рассуждающего агента
+2. **Ограничения существуют**: Чистые LLM-рассуждения подвержены ошибкам на сложных задачах
+3. **Инструменты помогают**: Внешние вычисления (калькуляторы и т.д.) повышают точность
+4. **Итеративность важна**: Многошаговые паттерны рассуждений (такие как ReAct) работают лучше
+5. **Прозраценность ценна**: Наблюдение за процессом рассуждений помогает отладке и верификации
 
-## Next Steps
+## Следующие шаги
 
-After understanding basic reasoning:
-- **Add tools**: Let the agent use calculators, databases, APIs
-- **Implement verification**: Check answers, retry on errors
-- **Use chain-of-thought**: Make reasoning explicit
-- **Apply ReAct pattern**: Combine reasoning and tool use systematically
+После понимания базовых рассуждений:
+- **Добавьте инструменты**: Позвольте агенту использовать калькуляторы, базы данных, API
+- **Реализуйте верификацию**: Проверяйте ответы, повторяйте при ошибках
+- **Используйте цепочку рассуждений**: Сделайте рассуждения явными
+- **Применяйте паттерн ReAct**: Систематически сочетайте рассуждения и использование инструментов
 
-This example is the foundation for more sophisticated agent architectures that combine reasoning with external capabilities.
+Этот пример является фундаментом для более сложных архитектур агентов, которые сочетают рассуждения с внешними возможностями.

@@ -1,15 +1,15 @@
-# Concept: ReAct Pattern for AI Agents
+# Концепция: Паттерн ReAct для AI-агентов
 
-## What is ReAct?
+## Что такое ReAct?
 
-**ReAct** (Reasoning + Acting) is a framework that combines:
-- **Reasoning**: Thinking through problems step-by-step
-- **Acting**: Using tools to accomplish subtasks
-- **Observing**: Learning from tool results
+**ReAct** (Рассуждение + Действие) — это фреймворк, который сочетает:
+- **Рассуждение**: Пошаговое обдумывание задач
+- **Действие**: Использование инструментов для выполнения подзадач
+- **Наблюдение**: Извлечение уроков из результатов инструментов
 
-This creates agents that can solve complex, multi-step problems reliably.
+Это создаёт агентов, способных надёжно решать сложные многошаговые задачи.
 
-## The Core Pattern
+## Ключевой паттерн
 
 ```
 ┌─────────────┐
@@ -40,54 +40,54 @@ This creates agents that can solve complex, multi-step problems reliably.
 └─────────────────────────────────────┘
 ```
 
-## Why ReAct Matters
+## Почему ReAct важен
 
-### Traditional LLMs Struggle With:
-1. **Complex calculations** - arithmetic errors
-2. **Multi-step problems** - lose track of progress
-3. **Using tools** - don't know when/how
-4. **Explaining decisions** - black box reasoning
+### Традиционные LLM испытывают трудности с:
+1. **Сложными вычислениями** — арифметические ошибки
+2. **Многошаговыми задачами** — потеря контроля над прогрессом
+3. **Использованием инструментов** — не знают когда/как
+4. **Объяснением решений** — чёрный ящик рассуждений
 
-### ReAct Solves This:
-1. **Reliable calculations** - delegates to tools
-2. **Structured progress** - explicit steps
-3. **Tool orchestration** - knows when to use what
-4. **Transparent reasoning** - visible thought process
+### ReAct решает это:
+1. **Надёжные вычисления** — делегирует инструментам
+2. **Структурированный прогресс** — явные шаги
+3. **Оркестрация инструментов** — знает когда что использовать
+4. **Прозрачные рассуждения** — видимый процесс мышления
 
-## The Three Components
+## Три компонента
 
-### 1. Thought (Reasoning)
+### 1. Мысль (Рассуждение)
 
-The agent reasons about:
-- What information is needed
-- Which tool to use
-- Whether the result makes sense
-- What to do next
+Агент рассуждает о:
+- Какая информация необходима
+- Какой инструмент использовать
+- Имеет ли результат смысл
+- Что делать дальше
 
-Example:
+Пример:
 ```
 Thought: I need to calculate 15 × 8 to find revenue
 ```
 
-### 2. Action (Tool Use)
+### 2. Действие (Использование инструмента)
 
-The agent calls a tool with specific parameters:
+Агент вызывает инструмент с конкретными параметрами:
 
-Example:
+Пример:
 ```
 Action: multiply(15, 8)
 ```
 
-### 3. Observation (Learning)
+### 3. Наблюдение (Извлечение урока)
 
-The agent receives and interprets the tool result:
+Агент получает и интерпретирует результат инструмента:
 
-Example:
+Пример:
 ```
 Observation: 120
 ```
 
-## Complete Example
+## Полный пример
 
 ```
 Problem: "If 15 items cost $8 each and 20 items cost $8 each, 
@@ -109,38 +109,38 @@ Thought: I have the final answer
 Answer: The total revenue is $280
 ```
 
-## Key Benefits
+## Ключевые преимущества
 
-### 1. Reliability
-- Tools provide accurate results
-- No arithmetic mistakes
-- Verifiable calculations
+### 1. Надёжность
+- Инструменты обеспечивают точные результаты
+- Нет арифметических ошибок
+- Верифицируемые вычисления
 
-### 2. Transparency
-- See each reasoning step
-- Understand decision-making
-- Debug easily
+### 2. Прозрачность
+- Виден каждый шаг рассуждений
+- Понятно принятие решений
+- Легко отлаживать
 
-### 3. Scalability
-- Handle complex problems
-- Break into manageable steps
-- Add more tools as needed
+### 3. Масштабируемость
+- Обработка сложных задач
+- Разбиение на управляемые шаги
+- Добавление инструментов по мере необходимости
 
-### 4. Flexibility
-- Works with any tools
-- Adapts to problem complexity
-- Self-corrects when needed
+### 4. Гибкость
+- Работает с любыми инструментами
+- Адаптируется к сложности задачи
+- Самокорректируется при необходимости
 
-## Comparison with Other Approaches
+## Сравнение с другими подходами
 
-### Zero-Shot Prompting
+### Zero-Shot промптинг
 ```
 User: "Calculate 15×8 + 20×8"
 LLM: "The answer is 279"  ❌ Wrong!
 ```
-**Problem**: LLM calculates in head, makes errors
+**Проблема**: LLM считает в голове, допускает ошибки
 
-### Chain-of-Thought
+### Цепочка рассуждений
 ```
 User: "Calculate 15×8 + 20×8"
 LLM: "Let me think step by step:
@@ -148,9 +148,9 @@ LLM: "Let me think step by step:
      20×8 = 160
      120+160 = 279"  ❌ Still wrong!
 ```
-**Problem**: Shows work but still miscalculates
+**Проблема**: Показывает работу, но всё ещё ошибается
 
-### ReAct (This Implementation)
+### ReAct (эта реализация)
 ```
 User: "Calculate 15×8 + 20×8"
 Agent:
@@ -168,9 +168,9 @@ Agent:
   
   Answer: 280  ✅ Correct!
 ```
-**Success**: Uses tools, gets accurate results
+**Успех**: Использует инструменты, получает точные результаты
 
-## Architecture Diagram
+## Диаграмма архитектуры
 
 ```
 ┌──────────────────────────────────────┐
@@ -209,11 +209,11 @@ Agent:
 └──────────────────────────────────────┘
 ```
 
-## Implementation Strategies
+## Стратегии реализации
 
-### 1. Explicit Pattern Enforcement
+### 1. Явное принуждение к паттерну
 
-Force the LLM to follow structure:
+Заставляем LLM следовать структуре:
 ```javascript
 systemPrompt: `CRITICAL: Follow this EXACT pattern:
 Thought: [reasoning]
@@ -223,85 +223,85 @@ Observation: [result]
 Answer: [final answer]`
 ```
 
-### 2. Iteration Control
+### 2. Контроль итераций
 
-Prevent infinite loops:
+Предотвращение бесконечных циклов:
 ```javascript
 maxIterations = 10  // Safety limit
 ```
 
-### 3. Streaming Output
+### 3. Стриминговый вывод
 
-Show progress in real-time:
+Отображение прогресса в реальном времени:
 ```javascript
 onTextChunk: (chunk) => {
     process.stdout.write(chunk);
 }
 ```
 
-### 4. Answer Detection
+### 4. Детекция ответа
 
-Know when to stop:
+Знание, когда остановиться:
 ```javascript
 if (response.includes("Answer:")) {
     return fullResponse;  // Done!
 }
 ```
 
-## Real-World Applications
+## Практические применения
 
-### 1. Math & Science
-- Complex calculations
-- Multi-step derivations
-- Unit conversions
+### 1. Математика и наука
+- Сложные вычисления
+- Многошаговые выводы
+- Конвертация единиц
 
-### 2. Data Analysis
-- Query databases
-- Process results
-- Generate reports
+### 2. Анализ данных
+- Запросы к базам данных
+- Обработка результатов
+- Генерация отчётов
 
-### 3. Research Assistants
-- Search multiple sources
-- Synthesize information
-- Cite sources
+### 3. Исследовательские ассистенты
+- Поиск по нескольким источникам
+- Обобщение информации
+- Ссылки на источники
 
-### 4. Coding Agents
-- Read code
-- Run tests
-- Fix bugs
-- Refactor
+### 4. Кодирующие агенты
+- Чтение кода
+- Запуск тестов
+- Исправление ошибок
+- Рефакторинг
 
-### 5. Customer Support
-- Query knowledge base
-- Check order status
-- Process refunds
-- Escalate issues
+### 5. Поддержка клиентов
+- Запрос к базе знаний
+- Проверка статуса заказа
+- Обработка возвратов
+- Эскалация проблем
 
-## Limitations & Considerations
+## Ограничения и соображения
 
-### 1. Iteration Cost
-Each thought/action/observation cycle costs tokens and time.
+### 1. Стоимость итераций
+Каждый цикл мысль/действие/наблюдение стоит токенов и времени.
 
-**Solution**: Use efficient models, limit iterations
+**Решение**: Используйте эффективные модели, ограничивайте итерации
 
-### 2. Tool Quality
-ReAct is only as good as its tools.
+### 2. Качество инструментов
+ReAct настолько хорош, насколько хороши его инструменты.
 
-**Solution**: Build robust, well-tested tools
+**Решение**: Создавайте надёжные, протестированные инструменты
 
-### 3. Prompt Engineering
-System prompt must be very clear.
+### 3. Проектирование промптов
+Системный промпт должен быть очень ясным.
 
-**Solution**: Test extensively, iterate on prompt
+**Решение**: Тестируйте тщательно, итерируйте промпт
 
-### 4. Error Handling
-Tools can fail or return unexpected results.
+### 4. Обработка ошибок
+Инструменты могут падать или возвращать неожиданные результаты.
 
-**Solution**: Add error handling, validation
+**Решение**: Добавляйте обработку ошибок, валидацию
 
-## Advanced Patterns
+## Продвинутые паттерны
 
-### Self-Correction
+### Самокоррекция
 ```
 Thought: That result seems wrong
 Action: verify(previous_result)
@@ -310,7 +310,7 @@ Thought: Let me recalculate
 Action: multiply(15, 8)  # Try again
 ```
 
-### Meta-Reasoning
+### Мета-рассуждения
 ```
 Thought: I've used 5 iterations, I should finish soon
 Action: summarize_progress()
@@ -318,7 +318,7 @@ Observation: Still need to add final numbers
 Thought: One more step should do it
 ```
 
-### Dynamic Tool Selection
+### Динамический выбор инструментов
 ```
 Thought: This is a division problem
 Action: divide(10, 2)  # Chooses right tool
@@ -327,48 +327,48 @@ Thought: Now I need to add
 Action: add(5, 3)  # Switches tools
 ```
 
-## Research Origins
+## Исследовательское происхождение
 
-ReAct was introduced in:
+ReAct был представлен в:
 > **"ReAct: Synergizing Reasoning and Acting in Language Models"**  
 > Yao et al., 2022  
 > Paper: https://arxiv.org/abs/2210.03629
 
-Key insight: Combining reasoning traces with task-specific actions creates more powerful agents than either alone.
+Ключевой вывод: Сочетание следов рассуждений с действиями для конкретных задач создаёт более мощных агентов, чем каждый из этих подходов по отдельности.
 
-## Modern Frameworks Using ReAct
+## Современные фреймворки, использующие ReAct
 
-1. **LangChain** - AgentExecutor with ReAct
-2. **AutoGPT** - Autonomous task execution
-3. **BabyAGI** - Task management system
-4. **GPT Engineer** - Code generation
-5. **ChatGPT Plugins** - Tool-using chatbots
+1. **LangChain** — AgentExecutor с ReAct
+2. **AutoGPT** — Автономное выполнение задач
+3. **BabyAGI** — Система управления задачами
+4. **GPT Engineer** — Генерация кода
+5. **ChatGPT Plugins** — Чат-боты с инструментами
 
-## Why Learn This Pattern?
+## Зачем изучать этот паттерн?
 
-### 1. Foundation of Modern Agents
-Nearly all production agent systems use ReAct or similar patterns.
+### 1. Фундамент современных агентов
+Почти все production-системы агентов используют ReAct или похожие паттерны.
 
-### 2. Understandable AI
-Unlike black-box models, you see exactly what's happening.
+### 2. Понятный AI
+В отличие от моделей чёрного ящика, Вы видите точно, что происходит.
 
-### 3. Extendable
-Easy to add new tools and capabilities.
+### 3. Расширяемость
+Легко добавлять новые инструменты и возможности.
 
-### 4. Debuggable
-When things go wrong, you can see where and why.
+### 4. Отлаживаемость
+Когда что-то идёт не так, Вы видите где и почему.
 
-### 5. Production-Ready
-This pattern scales from demos to real applications.
+### 5. Production-ready
+Этот паттерн масштабируется от демо до реальных приложений.
 
-## Summary
+## Резюме
 
-ReAct transforms LLMs from:
-- **Brittle calculators** → Reliable problem solvers
-- **Black boxes** → Transparent reasoners  
-- **Single-shot answerers** → Iterative thinkers
-- **Isolated models** → Tool-using agents
+ReAct превращает LLM из:
+- **Хрупких калькуляторов** → Надёжных решателей задач
+- **Чёрных ящиков** → Прозрачных рассуждающих  
+- **Одноразовых ответчиков** → Итеративных мыслителей
+- **Изолированных моделей** → Агентов с инструментами
 
-It's the bridge between language models and autonomous agents that can actually accomplish complex tasks reliably.
+Это мост между языковыми моделями и автономными агентами, которые действительно могут надёжно решать сложные задачи.
 
-If the tool registry grows large, you can **pre-filter** which tools appear in each ReAct iteration (for example with embedding similarity over exemplar phrases); see [Example 15: tool routing with embeddings](../15_tool-routing-embeddings/CONCEPT.md).
+Если реестр инструментов становится большим, можно **предварительно фильтровать**, какие инструменты появляются на каждой итерации ReAct (например, с помощью сходства эмбеддингов по фразам-примерам); см. [Пример 15: маршрутизация инструментов с эмбеддингами](../15_tool-routing-embeddings/CONCEPT.md).

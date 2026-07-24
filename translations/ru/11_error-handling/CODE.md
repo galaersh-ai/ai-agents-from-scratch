@@ -1,14 +1,14 @@
-# Code Explanation: error-handling.js
+# Объяснение кода: error-handling.js
 
-This file demonstrates **comprehensive error handling for agent-style programs**: a typed error taxonomy, timeouts and retries with backoff, simulated tool failures, **degraded mode** when the LLM path fails, and **`AgentWorkflowError`** when orchestration breaks. It runs locally with **`node-llama-cpp`** and a GGUF model (same stack as the other agent examples).
+Этот файл демонстрирует **комплексную обработку ошибок для программ в стиле агентов**: типизированную таксономию ошибок, таймауты и повторы с backoff, симуляцию отказов инструментов, **деградированный режим** при сбое пути LLM и **`AgentWorkflowError`** при нарушении оркестрации. Он запускается локально с **`node-llama-cpp`** и моделью GGUF (тот же стек, что и в других примерах агентов).
 
-**Run:** `node examples/11_error-handling/error-handling.js`
+**Запуск:** `node examples/11_error-handling/error-handling.js`
 
 ---
 
-## Step-by-Step Code Breakdown
+## Пошаговый разбор кода
 
-### 1. Imports 
+### 1. Импорты
 
 ```javascript
 import crypto from "node:crypto";
@@ -17,14 +17,14 @@ import { fileURLToPath } from "url";
 import path from "path";
 ```
 
-**What's happening:**
-- **`crypto`** - UUIDs for correlation ids (`randomUUID`) and jitter for retry delays (`randomInt`).
-- **`node-llama-cpp`** - Load the model, chat session, and **`defineChatSessionFunction`** for tools.
-- **`url` / `path`** - Resolve **`__dirname`** in an ES module and join paths to the **`.gguf`** file.
+**Что происходит:**
+- **`crypto`** — UUID для correlation ID (`randomUUID`) и jitter для задержек повторов (`randomInt`).
+- **`node-llama-cpp`** — Загрузка модели, чат-сессии и **`defineChatSessionFunction`** для инструментов.
+- **`url` / `path`** — Разрешение **`__dirname`** в ES-модуле и построение путей к файлу **`.gguf`**.
 
 ---
 
-### 2. Error taxonomy 
+### 2. Таксономия ошибок
 
 ```javascript
 class AppError extends Error { /* code, userMessage, retryable, details, cause */ }
@@ -34,74 +34,74 @@ class ToolExecutionError extends AppError { /* TOOL_EXECUTION_FAILED; toolName *
 class AgentWorkflowError extends AppError { /* AGENT_WORKFLOW_FAILED; step */ }
 ```
 
-**Purpose:**
-- **`AppError`** - One shape for logs, retries, and user-facing text: stable **`code`**, safe **`userMessage`**, structured **`details`**, optional **`cause`**.
-- Subclasses set sensible defaults (e.g. validation is not retryable; tools often are not, unless you pass **`retryable: true`**).
-- **`AgentWorkflowError`** adds **`step`** (e.g. `policy_guard`, `resolve_user_profile`) for orchestration-level failures. The comment in source explains how this one class can stand in for policy / workflow / system-style errors in a small demo.
+**Назначение:**
+- **`AppError`** — Одна структура для логов, повторов и текста для пользователей: стабильный **`code`**, безопасный **`userMessage`**, структурированные **`details`**, опциональный **`cause`**.
+- Подклассы устанавливают разумные дефолты (например, валидация не повторяется; инструменты часто не повторяются, если Вы не передаёте **`retryable: true`**).
+- **`AgentWorkflowError`** добавляет **`step`** (например, `policy_guard`, `resolve_user_profile`) для ошибок на уровне оркестрации. Комментарий в исходном коде объясняет, как один этот класс может представлять ошибки стилей política / рабочий процесс / система в маленькой демонстрации.
 
 ---
 
-### 3. `sleep` 
+### 3. `sleep`
 
-Simple `Promise`-based delay. Used by **`withRetries`** between attempts and inside fake “network” tools.
-
----
-
-### 4. `withTimeout` 
-
-**`Promise.race`** between the real work and a timer. On timeout, rejects with an **`AppError`** with code **`TIMEOUT`**, **`retryable: true`**, and **`details: { label, ms }`**. The timer is cleared in **`finally`**.
-
-**Why it matters:** Every LLM or tool call that could hang should be bounded so the agent can recover instead of stalling forever.
+Простая задержка на основе `Promise`. Используется **`withRetries`** между попытками и внутри фейковых «сетевых» инструментов.
 
 ---
 
-### 5. `normalizeUnknownError` 
+### 4. `withTimeout`
 
-If the thrown value is already an **`AppError`**, return it. Otherwise wrap as **`UNKNOWN_ERROR`** (non-retryable), stash original name/message in **`details`**, set **`cause`** to the original error.
+**`Promise.race`** между реальной работой и таймером. При таймауте отклоняет с **`AppError`** с кодом **`TIMEOUT`**, **`retryable: true`** и **`details: { label, ms }`**. Таймер очищается в **`finally`**.
 
-**Why it matters:** Catch blocks often receive **`Error`**, strings, or library-specific types; normalization makes **`retryOn`** and **`formatUserFacingError`** predictable.
-
----
-
-### 6. `classifyError` 
-
-Calls **`normalizeUnknownError`**, then returns **`{ error, retryable, type }`** where **`type`** is **`error.code`**.
-
-**Why it matters:** One place to decide “retry?” instead of repeating **`instanceof`** checks across **`promptLLM`**, **`runAgent`**, and **`withRetries`** predicates.
+**Почему это важно:** Каждый вызов LLM или инструмента, который может зависнуть, должен быть ограничен, чтобы агент мог восстановиться вместо бесконечного зависания.
 
 ---
 
-### 7. `isRetryable` 
+### 5. `normalizeUnknownError`
 
-Returns **`classifyError(err).retryable`**. Used as the **default** **`retryOn`** for **`withRetries`**.
+Если брошенное значение уже является **`AppError`**, возвращает его. В противном случае оборачивает как **`UNKNOWN_ERROR`** (не повторяется), сохраняет исходное имя/сообщение в **`details`**, устанавливает **`cause`** как исходную ошибку.
 
----
-
-### 8. `jitteredBackoffDelay` 
-
-Exponential delay capped at **`maxDelayMs`**, plus **random jitter** via **`crypto.randomInt`**, so many clients don’t retry in lockstep.
+**Почему это важно:** Блоки catch часто получают **`Error`**, строки или специфичные для библиотеки типы; нормализация делает **`retryOn`** и **`formatUserFacingError`** предсказуемыми.
 
 ---
 
-### 9. `withRetries` 
+### 6. `classifyError`
 
-Runs **`fn`** up to **`retries + 1`** times. After a failure, if there are attempts left and **`retryOn(err)`** is true, waits (**`sleep`** + **`jitteredBackoffDelay`**), logs **`[retry]`**, and retries. Otherwise throws **`lastErr`**.
+Вызывает **`normalizeUnknownError`**, затем возвращает **`{ error, retryable, type }`**, где **`type`** — это **`error.code`**.
 
----
-
-### 10. `formatUserFacingError` 
-
-Builds the string shown to the “user” in the demo: **`userMessage`** plus **`(Reference: <correlationId>)`**, or a generic fallback if the error wasn’t an **`AppError`**.
+**Почему это важно:** Одно место для решения «повторять?» вместо повторения проверок **`instanceof`** в предикатах **`promptLLM`**, **`runAgent`** и **`withRetries`**.
 
 ---
 
-### 11. `printAgentWorkflowErrorBanner` 
+### 7. `isRetryable`
 
-When an **`AgentWorkflowError`** is caught, prints a bordered block to **stderr**: step, code, correlation id, messages, **`details`**, and a short summary of **`cause`**. Complements the one-line **`[agent_error]`** JSON log.
+Возвращает **`classifyError(err).retryable`**. Используется как **дефолтный** **`retryOn`** для **`withRetries`**.
 
 ---
 
-### 12. `SIMULATION` and fake tools 
+### 8. `jitteredBackoffDelay`
+
+Экспоненциальная задержка с ограничением **`maxDelayMs`**, плюс **случайный jitter** через **`crypto.randomInt`**, чтобы многие клиенты не повторялись синхронно.
+
+---
+
+### 9. `withRetries`
+
+Запускает **`fn`** до **`retries + 1`** раз. После падения, если есть оставшиеся попытки и **`retryOn(err)`** истинно, ждёт (**`sleep`** + **`jitteredBackoffDelay`**), логирует **`[retry]`** и повторяет. В противном случае бросает **`lastErr`**.
+
+---
+
+### 10. `formatUserFacingError`
+
+Строит строку, показываемую «пользователю» в демо: **`userMessage`** плюс **`(Reference: <correlationId>)`**, или общий fallback, если ошибка не была **`AppError`**.
+
+---
+
+### 11. `printAgentWorkflowErrorBanner`
+
+Когда ловится **`AgentWorkflowError`**, печатает ограниченный блок в **stderr**: шаг, код, correlation ID, сообщения, **`details`** и краткую сводку **`cause`**. Дополняет однострочный JSON-лог **`[agent_error]`**.
+
+---
+
+### 12. `SIMULATION` и фейковые инструменты
 
 ```javascript
 const SIMULATION = {
@@ -110,106 +110,106 @@ const SIMULATION = {
 };
 ```
 
-**`fetchUserFromPrimary`** - Simulates latency; **`u_999`** > non-retryable “not found”; **`u_777`** > always retryable primary failure (demo); otherwise ~20% random transient failure; success returns a profile with **`source: "primary"`**.
+**`fetchUserFromPrimary`** — Симулирует задержку; **`u_999`** > не повторяется «not found»; **`u_777`** > всегда повторяется падение основного пути (демо); иначе ~20% случайного временного падения; успех возвращает профиль с **`source: "primary"`**.
 
-**`fetchUserFromFallback`** - Lower-fidelity profile; for **`u_777`** throws so the **primary > fallback** chain can surface **`AgentWorkflowError`** deterministically.
-
----
-
-### 13. Initialize model and session 
-
-Same pattern as **`simple-agent.js`**: **`getLlama`**, **`loadModel`** (path to **`models/Qwen3-1.7B-Q8_0.gguf`**), **`createContext`**, **`LlamaChatSession`** with a **system prompt** that tells the model it can fetch users via tools.
+**`fetchUserFromFallback`** — Профиль с меньшей детализацией; для **`u_777`** бросает исключение, чтобы цепочка **основной > запасной** могла детерминированно выдать **`AgentWorkflowError`**.
 
 ---
 
-### 14. Register tools 
+### 13. Инициализация модели и сессии
 
-Two **`defineChatSessionFunction`** wrappers call **`fetchUserFromPrimary`** and **`fetchUserFromFallback`** with JSON Schema **`userId`**. **`functions`** is passed into **`session.prompt`** so the LLM can invoke tools by name.
+Аналогичный паттерн **`simple-agent.js`**: **`getLlama`**, **`loadModel`** (путь к **`models/Qwen3-1.7B-Q8_0.gguf`**), **`createContext`**, **`LlamaChatSession`** с **системным промптом**, который говорит модели, что она может извлекать пользователей через инструменты.
 
 ---
 
-### 15. `promptLLM` 
+### 14. Регистрация инструментов
 
-Wraps **`session.prompt`** with **`withTimeout`**, **`withRetries`**, and correlation-aware errors:
+Две обёртки **`defineChatSessionFunction`** вызывают **`fetchUserFromPrimary`** и **`fetchUserFromFallback`** с JSON Schema **`userId`**. **`functions`** передаётся в **`session.prompt`**, чтобы LLM мог вызывать инструменты по имени.
 
-- Empty trimmed response > **`LLMCallError`** (retryable).
-- **`catch`**: **`classifyError`**; rethrows **`ToolExecutionError`** / **`LLMCallError`** unchanged; anything else becomes **`LLMCallError`** with **`retryable`** only if the normalized failure was **`TIMEOUT`** (**`cause`** preserved).
+---
+
+### 15. `promptLLM`
+
+Оборачивает **`session.prompt`** с **`withTimeout`**, **`withRetries`** и ошибками с учётом correlation:
+
+- Пустой обрезанный ответ > **`LLMCallError`** (повторяется).
+- **`catch`**: **`classifyError`**; повторно бросает **`ToolExecutionError`** / **`LLMCallError`** без изменений; всё остальное становится **`LLMCallError`** с **`retryable`** только если нормализованный сбой был **`TIMEOUT`** (**`cause`** сохранён).
 - **`retryOn`**: **`(err) => classifyError(err).retryable`**.
 
 ---
 
-### 16. `runDegradedProfileResolution` 
+### 16. `runDegradedProfileResolution`
 
-Runs **without** the LLM after the LLM path failed with **`LLMCallError`**:
+Запускается **без** LLM после того, как путь LLM упал с **`LLMCallError`**:
 
-1. Extract **`u_<digits>`** from **`SKIP_LLM_DEGRADED`** match or free text; else **`ValidationError`**.
-2. **`withRetries`** + **`withTimeout`** on primary; **`retryOn`** only for **retryable** **`ToolExecutionError`**.
-3. If primary still fails with retryable tool error > try **`fetchUserFromFallback`**. If fallback throws > **`AgentWorkflowError`** (**`resolve_user_profile`**, **`cause`** = fallback error).
-4. Returns a short bullet answer prefixed with **“Model unavailable; answered via deterministic fallback.”**
+1. Извлекает **`u_<цифры>`** из совпадения **`SKIP_LLM_DEGRADED`** или свободного текста; иначе **`ValidationError`**.
+2. **`withRetries`** + **`withTimeout`** для основного пути; **`retryOn`** только для **повторяющегося** **`ToolExecutionError`**.
+3. Если основной всё ещё падает с повторяющейся ошибкой инструмента > пробует **`fetchUserFromFallback`**. Если запасной бросает > **`AgentWorkflowError`** (**`resolve_user_profile`**, **`cause`** = ошибка запасного).
+4. Возвращает краткий ответ с префиксом **«Model unavailable; answered via deterministic fallback.»**.
 
 ---
 
-### 17. `runAgent` 
+### 17. `runAgent`
 
-**Flow:**
+**Поток:**
 
 1. **`correlationId = crypto.randomUUID()`**.
-2. Empty input > **`ValidationError`**.
-3. Text contains **`u_demo_workflow`** > **`AgentWorkflowError`** (**`policy_guard`**) - demo guard after validation.
-4. **`SKIP_LLM_DEGRADED u_<digits>`** > forces **`LLMCallError`** without calling the model (deterministic degraded demo).
-5. Else **`promptLLM`**. Success > **`{ ok: true, output }`**.
-6. **`catch`** only **`LLMCallError`** > log **`[degraded_mode]`**, call **`runDegradedProfileResolution`**, return **`ok: true`** with degraded output.
-7. Any other error propagates to the outer **`catch`**: **`classifyError`**, optional **`printAgentWorkflowErrorBanner`** for **`AgentWorkflowError`**, **`console.error("[agent_error]", …)`**, return **`{ ok: false, output: formatUserFacingError(...) }`**.
+2. Пустой ввод > **`ValidationError`**.
+3. Текст содержит **`u_demo_workflow`** > **`AgentWorkflowError`** (**`policy_guard`**) — демо-ограничитель после валидации.
+4. **`SKIP_LLM_DEGRADED u_<цифры>`** > вынуждает **`LLMCallError`** без вызова модели (детерминированное деградированное демо).
+5. Иначе **`promptLLM`**. Успех > **`{ ok: true, output }`**.
+6. **`catch`** только **`LLMCallError`** > лог **`[degraded_mode]`**, вызов **`runDegradedProfileResolution`**, возврат **`ok: true`** с деградированным выводом.
+7. Любая другая ошибка распространяется во внешний **`catch`**: **`classifyError`**, опциональный **`printAgentWorkflowErrorBanner`** для **`AgentWorkflowError`**, **`console.error("[agent_error]", …)`**, возврат **`{ ok: false, output: formatUserFacingError(...) }`**.
 
 ---
 
-### 18. Demo loop and cleanup 
+### 18. Демо-цикл и очистка
 
-**`inputs`** runs a fixed set of strings (happy path, **`u_999`**, **`u_demo_workflow`**, **`SKIP_LLM_DEGRADED u_777`**, empty). Each iteration prints **`USER:`**, **`runAgent`**, then assistant text or error text.
+**`inputs`** запускает фиксированный набор строк (счастливый путь, **`u_999`**, **`u_demo_workflow`**, **`SKIP_LLM_DEGRADED u_777`**, пустой). Каждая итерация печатает **`USER:`**, **`runAgent`**, затем текст ассистента или текст ошибки.
 
-**Dispose:** **`session`**, **`context`**, **`model`**, **`llama`** - important for local/native bindings.
-
----
-
-## Key Concepts Demonstrated
-
-### 1. Typed errors + stable codes
-
-Dashboards and alerts can group by **`code`**. Users never see **`details`** or stacks-only **`userMessage`** and a **reference id**.
-
-### 2. Classify, then retry
-
-**`normalizeUnknownError` > `classifyError` > `retryable`** keeps **`withRetries`** and **`promptLLM`** aligned on what counts as transient.
-
-### 3. Timeout > retry > fallback > degraded mode
-
-**`withTimeout`** bounds wait time. **`withRetries`** handles flaky LLM or tools. **`runDegradedProfileResolution`** is the **deterministic** path when the LLM path is unusable but you can still complete work with tools.
-
-### 4. `AgentWorkflowError` vs tool errors
-
-A **tool** throws **`ToolExecutionError`**. When **policy** blocks or **primary + fallback** both fail in orchestrated degraded flow, the surfaced error is **`AgentWorkflowError`** with **`cause`** pointing at the inner failure.
+**Очистка:** **`session`**, **`context`**, **`model`**, **`llama`** — важно для локальных/нативных привязок.
 
 ---
 
-## Expected Output (representative)
+## Продемонстрированные ключевые концепции
 
-When you run the script you will see separator lines, **`USER:`** lines, and either **`ASSISTANT:`** or **`ASSISTANT (error):`**. For **`u_demo_workflow`** and for **`SKIP_LLM_DEGRADED u_777`** (when fallback fails), **stderr** shows the **AGENT WORKFLOW FAILED** banner plus **`[agent_error]`** JSON. **`[retry]`** and **`[degraded_mode]`** lines appear when retries or degraded path activate.
+### 1. Типизированные ошибки + стабильные коды
 
-Exact wording varies slightly (e.g. LLM output on the first prompt depends on the model).
+Дашборды и алерты могут группироваться по **`code`**. Пользователи никогда не видят **`details`** или стеки — только **`userMessage`** и **reference id**.
+
+### 2. Классифицируйте, затем повторяйте
+
+**`normalizeUnknownError` > `classifyError` > `retryable`** сохраняет согласованность **`withRetries`** и **`promptLLM`** в том, что считается временным.
+
+### 3. Таймаут > повтор > запасной вариант > деградированный режим
+
+**`withTimeout`** ограничивает время ожидания. **`withRetries`** обрабатывает нестабильные LLM или инструменты. **`runDegradedProfileResolution`** — это **детерминированный** путь, когда путь LLM непригоден, но Вы всё ещё можете завершить работу с инструментами.
+
+### 4. `AgentWorkflowError` vs ошибки инструментов
+
+**Инструмент** бросает **`ToolExecutionError`**. Когда **политика** блокирует или **основной + запасной** оба падают в оркестрированном деградированном потоке, выдаваемая ошибка — **`AgentWorkflowError`** с **`cause`**, указывающим на внутренний сбой.
 
 ---
 
-## Best Practices
+## Ожидаемый вывод (типичный)
 
-1. **Bound time** on LLM and tool calls (**`withTimeout`**).
-2. **Retry only transient failures**; use **`classifyError`** (or equivalent) so validation errors are never retried blindly.
-3. **Jitter** backoff to avoid synchronized retries.
-4. **Correlation ids** on every user-visible error and on structured logs.
-5. **Separate** operator logs (**`[agent_error]`**, banners) from what you show end users (**`formatUserFacingError`**).
-6. **Dispose** native/model resources when the script exits.
+При запуске скрипта Вы увидите разделители, строки **`USER:`** и либо **`ASSISTANT:`**, либо **`ASSISTANT (error):`**. Для **`u_demo_workflow`** и для **`SKIP_LLM_DEGRADED u_777`** (когда запасной вариант падает) **stderr** показывает баннер **AGENT WORKFLOW FAILED** плюс JSON **`[agent_error]`**. Строки **`[retry]`** и **`[degraded_mode]`** появляются при активации повторов или деградированного пути.
+
+Точная формулировка немного варьируется (например, вывод LLM на первом промпте зависит от модели).
 
 ---
 
-## Why This Matters for AI Agents
+## Лучшие практики
 
-Agents stack **LLM + tools + orchestration**. Failures can originate from any layer; without taxonomy and classification, you either **retry everything** (wasteful) or **retry nothing** (fragile). This example shows a minimal but complete path from **single-call errors** to **workflow-level** **`AgentWorkflowError`**, with a clear upgrade path to circuit breakers, real telemetry, and production-grade policy types.
+1. **Ограничивайте время** для вызовов LLM и инструментов (**`withTimeout`**).
+2. **Повторяйте только временные сбои**; используйте **`classifyError`** (или эквивалент), чтобы ошибки валидации никогда не повторялись слепо.
+3. **Jitter** для backoff, чтобы избежать синхронных повторов.
+4. **Correlation ID** для каждой ошибки, видимой пользователю, и для структурированных логов.
+5. **Разделяйте** логи оператора (**`[agent_error]`**, баннеры) от того, что Вы показываете конечным пользователям (**`formatUserFacingError`**).
+6. **Освобождайте** нативные/модельные ресурсы при завершении скрипта.
+
+---
+
+## Почему это важно для AI-агентов
+
+Агенты стакают **LLM + инструменты + оркестрация**. Сбои могут исходить из любого слоя; без таксономии и классификации Вы либо **повторяете всё** (расточительно), либо **ничего не повторяете** (хрупко). Этот пример показывает минимальный, но полный путь от **ошибок одиночного вызова** до **ошибки уровня рабочего процесса** **`AgentWorkflowError`** с ясным путём обновления до автоматов-предохранителей, реальной телеметрии и политика-типов уровня production.

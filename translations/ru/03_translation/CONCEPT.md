@@ -1,15 +1,16 @@
-# Concept: System Prompts & Agent Specialization
+# Концепция: Системные промпты и специализация агентов
 
-## Overview
+## Обзор
 
-This example demonstrates how to transform a general-purpose LLM into a **specialized agent** using **system prompts**. The key insight: you don't need different models for different tasks-you need different instructions.
+Этот пример демонстрирует, как превратить универсальную LLM в **специализированного агента** с помощью **системных промптов**. Ключевой вывод: Вам не нужны разные модели для разных задач — нужны разные инструкции.
 
-## What is a System Prompt?
+## Что такое системный промпт?
 
-A **system prompt** is a persistent instruction that shapes the AI's behavior for an entire conversation session.
+**Системный промпт** — это постоянная инструкция, которая формирует поведение AI на протяжении всей сессии разговора.
 
-### Analogy
-Think of hiring someone for a job:
+### Аналогия
+
+Представьте найм сотрудника на работу:
 
 ```
 Without System Prompt          With System Prompt
@@ -20,9 +21,9 @@ Without System Prompt          With System Prompt
                               guidelines and output format."
 ```
 
-## How System Prompts Work
+## Как работают системные промпты
 
-### The Context Structure
+### Структура контекста
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -46,11 +47,11 @@ Without System Prompt          With System Prompt
 └─────────────────────────────────────────────┘
 ```
 
-The system prompt sits at the top of the context and influences **every** response.
+Системный промпт находится в начале контекста и влияет на **каждый** ответ.
 
-## Agent Specialization Pattern
+## Паттерн специализации агентов
 
-### Transformation Flow
+### Поток трансформации
 
 ```
 ┌──────────────────┐    ┌─────────────────┐    ┌──────────────────┐
@@ -63,30 +64,30 @@ The system prompt sits at the top of the context and influences **every** respon
 └──────────────────┘    └─────────────────┘    └──────────────────┘
 ```
 
-### Example Specializations
+### Примеры специализаций
 
-**Translation Agent (this example):**
+**Агент-переводчик (этот пример):**
 ```
 System Prompt = Role + Rules + Output Format
 ```
 
-**Code Assistant:**
+**Кодирующий ассистент:**
 ```javascript
 systemPrompt: "You are an expert programmer. 
 Always provide working code with comments.
 Explain complex logic."
 ```
 
-**Data Analyst:**
+**Аналитик данных:**
 ```javascript
 systemPrompt: "You are a data analyst.
 Always show your calculations step-by-step.
 Cite data sources when available."
 ```
 
-## Anatomy of an Effective System Prompt
+## Структура эффективного системного промпта
 
-### The 5 Components
+### 5 компонентов
 
 ```
 ┌─────────────────────────────────────────┐
@@ -107,7 +108,7 @@ Cite data sources when available."
 └─────────────────────────────────────────┘
 ```
 
-### This Example's Structure
+### Структура этого примера
 
 ```
 Role:        "Professional scientific translator"
@@ -117,22 +118,22 @@ Format:      Idiomatic German, scientific style
 Constraints: "ONLY translated text, no explanation"
 ```
 
-## Why Detailed System Prompts Matter
+## Почему детальные системные промпты важны
 
-### Comparison Study
+### Сравнительное исследование
 
-**Minimal System Prompt:**
+**Минимальный системный промпт:**
 ```javascript
 systemPrompt: "Translate to German"
 ```
 
-**Result:**
-- May add unnecessary explanations
-- Inconsistent terminology
-- Mixed formality levels
-- Extra conversational text
+**Результат:**
+- Может добавлять ненужные объяснения
+- Несогласованная терминология
+- Смешанные уровни формальности
+- Лишний разговорный текст
 
-**Detailed System Prompt (this example):**
+**Детальный системный промпт (этот пример):**
 ```javascript
 systemPrompt: `You are a professional translator...
 - Rule 1: Preserve technical accuracy
@@ -142,13 +143,13 @@ systemPrompt: `You are a professional translator...
 DO NOT add any explanations`
 ```
 
-**Result:**
-- ✅ Consistent quality
-- ✅ Correct terminology
-- ✅ Proper formatting
-- ✅ Only translation output
+**Результат:**
+- ✅ Согласованное качество
+- ✅ Правильная терминология
+- ✅ Корректное форматирование
+- ✅ Только вывод перевода
 
-### Quality Impact
+### Влияние на качество
 
 ```
 Detail Level          Output Quality
@@ -159,24 +160,24 @@ Detailed      →     Highly consistent ⭐
 Over-detailed →     May confuse model
 ```
 
-## System Prompt Design Patterns
+## Паттерны проектирования системных промптов
 
-### Pattern 1: Role-Playing
+### Паттерн 1: Ролевая игра
 ```
 "You are a [profession] with expertise in [domain]..."
 ```
-Makes the model adopt that perspective.
+Заставляет модель adoptировать эту перспективу.
 
-### Pattern 2: Rule-Based
+### Паттерн 2: На основе правил
 ```
 "Follow these rules:
 1. Always...
 2. Never...
 3. When X, do Y..."
 ```
-Explicit constraints lead to predictable behavior.
+Явные ограничения ведут к предсказуемому поведению.
 
-### Pattern 3: Output Formatting
+### Паттерн 3: Форматирование вывода
 ```
 "Format your response as:
 - JSON
@@ -184,19 +185,19 @@ Explicit constraints lead to predictable behavior.
 - Plain text only
 - Step-by-step list"
 ```
-Controls the structure of responses.
+Контролирует структуру ответов.
 
-### Pattern 4: Contextual Awareness
+### Паттерн 4: Контекстная осведомлённость
 ```
 "You remember: [previous facts]
 You know that: [domain knowledge]
 Current situation: [context]"
 ```
-Primes the model with relevant information.
+Подготавливает модель соответствующей информацией.
 
-## How This Relates to AI Agents
+## Как это связано с AI-агентами
 
-### Agent = Model + System Prompt + Tools
+### Агент = Модель + Системный промпт + Инструменты
 
 ```
 ┌────────────────────────────────────────────┐
@@ -216,48 +217,48 @@ Primes the model with relevant information.
 └────────────────────────────────────────────┘
 ```
 
-**In this example:**
-- System Prompt: "You are a translator..."
-- LLM: Apertus-8B model
-- Tools: None (translation is done by the model itself)
+**В этом примере:**
+- Системный промпт: «Вы переводчик...»
+- LLM: Модель Apertus-8B
+- Инструменты: Нет (перевод выполняется самой моделью)
 
-**In more complex agents:**
-- System Prompt: "You are a research assistant..."
-- LLM: Any model
-- Tools: Web search, calculator, file access, etc.
+**В более сложных агентах:**
+- Системный промпт: «Вы исследовательский ассистент...»
+- LLM: Любая модель
+- Инструменты: Веб-поиск, калькулятор, доступ к файлам и т.д.
 
-## Practical Applications
+## Практические применения
 
-### 1. Domain Specialization
+### 1. Специализация по области
 ```
 Medical → "You are a medical professional..."
 Legal → "You are a legal expert..."
 Technical → "You are an engineer..."
 ```
 
-### 2. Output Control
+### 2. Контроль вывода
 ```
 JSON API → "Always respond in valid JSON"
 Markdown → "Format all responses as markdown"
 Code → "Only output executable code"
 ```
 
-### 3. Behavioral Constraints
+### 3. Поведенческие ограничения
 ```
 Concise → "Use maximum 2 sentences"
 Detailed → "Explain thoroughly with examples"
 Neutral → "Avoid opinions, state only facts"
 ```
 
-### 4. Multi-Language Support
+### 4. Многоязычная поддержка
 ```
 systemPrompt: `You are a multilingual assistant.
 Respond in the same language as the input.`
 ```
 
-## Chat Wrappers Explained
+## Chat-обёртки
 
-Different models need different conversation formats:
+Разным моделям нужны разные форматы разговора:
 
 ```
 Model Type        Format Needed         Wrapper
@@ -267,7 +268,7 @@ GPT-style        ChatML format         ChatMLWrapper
 Harmony models   Harmony format        HarmonyChatWrapper
 ```
 
-**What they do:**
+**Что они делают:**
 ```
 Your Message → [Chat Wrapper] → Formatted Prompt → Model
                     ↓
@@ -275,17 +276,17 @@ Your Message → [Chat Wrapper] → Formatted Prompt → Model
           <|system|>, <|user|>, <|assistant|>
 ```
 
-The wrapper ensures the model understands which part is the system prompt, which is the user message, etc.
+Обёртка обеспечивает понимание моделью, какая часть является системным промптом, какая — сообщением пользователя и т.д.
 
-## Key Takeaways
+## Ключевые выводы
 
-1. **System prompts are powerful**: They fundamentally change how the model behaves
-2. **Detailed is better**: More specific instructions = more consistent results
-3. **Structure matters**: Role + Rules + Format + Constraints
-4. **No retraining needed**: Same model, different behaviors
-5. **Foundation for agents**: System prompts are the first step in building specialized agents
+1. **Системные промпты мощные**: они фундаментально меняют поведение модели
+2. **Детальность лучше**: более конкретные инструкции = более согласованные результаты
+3. **Структура важна**: Роль + Правила + Формат + Ограничения
+4. **Не нужно дообучение**: одна модель, разные поведения
+5. **Фундамент для агентов**: системные промпты — первый шаг в создании специализированных агентов
 
-## Evolution Path
+## Путь эволюции
 
 ```
 1. Basic Prompting           (intro.js)
@@ -299,4 +300,4 @@ The wrapper ensures the model understands which part is the system prompt, which
 5. Full Agent Systems
 ```
 
-This example bridges the gap between basic LLM usage and true agent behavior by showing how to specialize through instructions.
+Этот пример преодолевает разрыв между базовым использованием LLM и истинным поведением агента, показывая, как специализировать через инструкции.

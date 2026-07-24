@@ -1,21 +1,21 @@
-# Concept: Basic LLM Interaction
+# Концепция: Основы работы с LLM
 
-## Overview
+## Обзор
 
-This example introduces the fundamental concepts of working with a Large Language Model (LLM) running locally on your machine. It demonstrates the simplest possible interaction: loading a model and asking it a question.
+Этот пример вводит фундаментальные концепции работы с большой языковой моделью (LLM), работающей локально на Вашем компьютере. Он демонстрирует максимально простое взаимодействие: загрузка модели и задание ей вопроса.
 
-## What is a Local LLM?
+## Что такое локальная LLM?
 
-A **Local LLM** is an AI language model that runs entirely on your own computer, without requiring internet connectivity or external API calls. Key benefits:
+**Локальная LLM** — это AI-языковая модель, которая работает полностью на Вашем компьютере, без подключения к интернету или внешних вызовов API. Основные преимущества:
 
-- **Privacy**: Your data never leaves your machine
-- **Cost**: No per-token API charges
-- **Control**: Full control over model selection and parameters
-- **Offline**: Works without internet connection
+- **Приватность**: Ваши данные никогда не покидают Ваш компьютер
+- **Стоимость**: Нет платы за токены через API
+- **Контроль**: Полный контроль над выбором модели и параметрами
+- **Офлайн**: Работает без подключения к интернету
 
-## Core Components
+## Основные компоненты
 
-### 1. Model Files (GGUF Format)
+### 1. Файлы моделей (формат GGUF)
 
 ```
 ┌─────────────────────────────┐
@@ -28,11 +28,11 @@ A **Local LLM** is an AI language model that runs entirely on your own computer,
 └─────────────────────────────┘
 ```
 
-- **GGUF**: File format optimized for llama.cpp
-- **Quantization**: Reduces model size (e.g., 8-bit instead of 16-bit)
-- **Trade-off**: Smaller size and faster speed vs. slight quality loss
+- **GGUF**: Формат файлов, оптимизированный для llama.cpp
+- **Квантизация**: Уменьшает размер модели (например, 8-бит вместо 16-бит)
+- **Компромисс**: Меньший размер и более быстрая скоростьvs небольшая потеря качества
 
-### 2. The Inference Pipeline
+### 2. Инференс-конвейер
 
 ```
 User Input → Model → Generation → Response
@@ -40,7 +40,7 @@ User Input → Model → Generation → Response
  "Hello"   Context   Sampling    "Hi there!"
 ```
 
-**Flow Diagram:**
+**Схема потока:**
 ```
 ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
 │  Prompt  │ --> │ Context  │ --> │  Model   │ --> │ Response │
@@ -48,9 +48,9 @@ User Input → Model → Generation → Response
 └──────────┘     └──────────┘     └──────────┘     └──────────┘
 ```
 
-### 3. Context Window
+### 3. Контекстное окно
 
-The **context** is the model's working memory:
+**Контекст** — это рабочая память модели:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -67,15 +67,15 @@ The **context** is the model's working memory:
 └─────────────────────────────────────────┘
 ```
 
-- Limited size (e.g., 2048, 4096, or 8192 tokens)
-- When full, old messages must be removed
-- All previous messages influence the next response
+- Ограниченный размер (например, 2048, 4096 или 8192 токена)
+- Когда заполнено, старые сообщения необходимо удалять
+- Все предыдущие сообщения влияют на следующий ответ
 
-## How LLMs Generate Responses
+## Как LLM генерируют ответы
 
-### Token-by-Token Generation
+### Поколенная генерация токенов
 
-LLMs don't generate entire sentences at once. They predict one **token** (word piece) at a time:
+LLM не генерируют целые предложения сразу. Они предсказывают один **токен** (часть слова) за раз:
 
 ```
 Prompt: "What is AI?"
@@ -88,7 +88,7 @@ Generation Process:
 ... continues until stop condition
 ```
 
-**Visualization:**
+**Визуализация:**
 ```
 Input Prompt
      ↓
@@ -100,18 +100,18 @@ Input Prompt
                 → ...
 ```
 
-## Key Concepts for AI Agents
+## Ключевые концепции для AI-агентов
 
-### 1. Stateless Processing
-- Each prompt is independent unless you maintain context
-- The model has no memory between different script runs
-- To build an "agent", you need to:
-  - Keep the context alive between prompts
-  - Maintain conversation history
-  - Add tools/functions (covered in later examples)
+### 1. Обработка без состояния
+- Каждый промпт независим, если Вы не поддерживаете контекст
+- У модели нет памяти между различными запусками скрипта
+- Чтобы создать «агента», Вам нужно:
+  - Поддерживать контекст между промптами
+  - Сохранять историю разговора
+  - Добавлять инструменты/функции (рассматривается в последующих примерах)
 
-### 2. Prompt Engineering Basics
-The way you phrase questions affects the response:
+### 2. Основы проектирования промптов
+Формулировка вопросов влияет на ответ:
 
 ```
 ❌ Poor: "node-llama-cpp"
@@ -119,8 +119,8 @@ The way you phrase questions affects the response:
 ✅ Best: "Explain what node-llama-cpp is and how it works"
 ```
 
-### 3. Resource Management
-LLMs consume significant resources:
+### 3. Управление ресурсами
+LLM потребляют значительные ресурсы:
 
 ```
 Model Loading
@@ -134,23 +134,23 @@ Model Loading
 Proper Disposal
 ```
 
-## Why This Matters for Agents
+## Почему это важно для агентов
 
-This basic example establishes the foundation for AI agents:
+Этот базовый пример закладывает фундамент для AI-агентов:
 
-1. **Agents need LLMs to "think"**: The model processes information and generates responses
-2. **Agents need context**: To maintain state across interactions
-3. **Agents need structure**: Later examples add tools, memory, and reasoning loops
+1. **Агентам нужны LLM для «мышления»**: модель обрабатывает информацию и генерирует ответы
+2. **Агентам нужен контекст**: для поддержания состояния между взаимодействиями
+3. **Агентам нужна структура**: последующие примеры добавляют инструменты, память и циклы рассуждений
 
-## Next Steps
+## Следующие шаги
 
-After understanding basic prompting, explore:
-- **System prompts**: Giving the model a specific role or behavior
-- **Function calling**: Allowing the model to use tools
-- **Memory**: Persisting information across sessions
-- **Reasoning patterns**: Like ReAct (Reasoning + Acting)
+После понимания базового промптинга изучите:
+- **Системные промпты**: присвоение модели конкретной роли или поведения
+- **Вызов функций**: предоставление модели возможности использовать инструменты
+- **Память**: сохранение информации между сессиями
+- **Паттерны рассуждений**: такие как ReAct (Рассуждение + Действие)
 
-## Diagram: Complete Architecture
+## Диаграмма: Полная архитектура
 
 ```
 ┌──────────────────────────────────────────────────┐
@@ -172,4 +172,4 @@ After understanding basic prompting, explore:
     └──────────────┘
 ```
 
-This layered architecture allows you to build sophisticated AI agents on top of basic LLM interactions.
+Эта слоистая архитектура позволяет создавать сложных AI-агентов на основе базового взаимодействия с LLM.

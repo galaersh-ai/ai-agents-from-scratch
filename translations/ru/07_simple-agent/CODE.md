@@ -1,10 +1,10 @@
-# Code Explanation: simple-agent.js
+# Объяснение кода: simple-agent.js
 
-This file demonstrates **function calling** - the core feature that transforms an LLM from a text generator into an agent that can take actions using tools.
+Этот файл демонстрирует **вызов функций** — ключевую фичу, которая превращает LLM из генератора текста в агента, способного выполнять действия с помощью инструментов.
 
-## Step-by-Step Code Breakdown
+## Пошаговый разбор кода
 
-### 1. Import and Setup (Lines 1-7)
+### 1. Импорт и настройка (строки 1-7)
 ```javascript
 import {defineChatSessionFunction, getLlama, LlamaChatSession} from "node-llama-cpp";
 import {fileURLToPath} from "url";
@@ -14,11 +14,11 @@ import {PromptDebugger} from "../helper/prompt-debugger.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const debug = false;
 ```
-- **defineChatSessionFunction**: Key import for creating callable functions
-- **PromptDebugger**: Helper for debugging prompts (covered at the end)
-- **debug**: Controls verbose logging
+- **defineChatSessionFunction**: Ключевой импорт для создания вызываемых функций
+- **PromptDebugger**: Утилита для отладки промптов (рассматривается в конце)
+- **debug**: Контролирует подробное логирование
 
-### 2. Initialize and Load Model (Lines 9-17)
+### 2. Инициализация и загрузка модели (строки 9-17)
 ```javascript
 const llama = await getLlama({debug});
 const model = await llama.loadModel({
@@ -31,10 +31,10 @@ const model = await llama.loadModel({
 });
 const context = await model.createContext({contextSize: 2000});
 ```
-- Uses Qwen3-1.7B model (good for function calling)
-- Sets context size to 2000 tokens explicitly
+- Использует модель Qwen3-1.7B (хороша для вызова функций)
+- Явно устанавливает размер контекста в 2000 токенов
 
-### 3. System Prompt for Time Conversion (Lines 20-23)
+### 3. Системный промпт для конвертации времени (строки 20-23)
 ```javascript
 const systemPrompt = `You are a professional chronologist who standardizes time representations across different systems.
     
@@ -42,21 +42,21 @@ Always convert times from 12-hour format (e.g., "1:46:36 PM") to 24-hour format 
 before returning them.`;
 ```
 
-**Purpose:**
-- Defines agent's role and behavior
-- Instructs on output format (24-hour, no seconds)
-- Ensures consistency in time representation
+**Назначение:**
+- Определяет роль и поведение агента
+- Инструктирует по формату вывода (24-часовой, без секунд)
+- Обеспечивает согласованность представления времени
 
-### 4. Create Session (Lines 25-28)
+### 4. Создание сессии (строки 25-28)
 ```javascript
 const session = new LlamaChatSession({
     contextSequence: context.getSequence(),
     systemPrompt,
 });
 ```
-Standard session with system prompt.
+Стандартная сессия с системным промптом.
 
-### 5. Define a Tool Function (Lines 30-39)
+### 5. Определение функции-инструмента (строки 30-39)
 ```javascript
 const getCurrentTime = defineChatSessionFunction({
     description: "Get the current time",
@@ -70,23 +70,23 @@ const getCurrentTime = defineChatSessionFunction({
 });
 ```
 
-**Breaking it down:**
+**Разбор по частям:**
 
-**description:** 
-- Tells the LLM what this function does
-- LLM reads this to decide when to call it
+**description:**
+- Говорит LLM, что делает эта функция
+- LLM читает это, чтобы решить, когда её вызвать
 
 **params:**
-- Defines function parameters (JSON Schema format)
-- Empty `properties: {}` means no parameters needed
-- Type must be "object" even if no properties
+- Определяет параметры функции (формат JSON Schema)
+- Пустые `properties: {}` означают, что параметры не нужны
+- Тип должен быть «object», даже если нет свойств
 
 **handler:**
-- The actual JavaScript function that executes
-- Returns current time as string (e.g., "1:46:36 PM")
-- Can be async (use await inside)
+- Фактическая JavaScript-функция, которая выполняется
+- Возвращает текущее время как строку (например, «1:46:36 PM»)
+- Может быть async (используйте await внутри)
 
-### How Function Calling Works
+### Как работает вызов функций
 
 ```
 1. User asks: "What time is it?"
@@ -102,30 +102,30 @@ const getCurrentTime = defineChatSessionFunction({
 8. LLM responds: "13:46"
 ```
 
-### 6. Register Functions (Line 41)
+### 6. Регистрация функций (строка 41)
 ```javascript
 const functions = {getCurrentTime};
 ```
-- Creates object with all available functions
-- Multiple functions: `{getCurrentTime, getWeather, calculate, ...}`
-- LLM can choose which function(s) to call
+- Создаёт объект со всеми доступными функциями
+- Несколько функций: `{getCurrentTime, getWeather, calculate, ...}`
+- LLM может выбрать, какие функции вызвать
 
-### 7. Define User Prompt (Line 42)
+### 7. Определение пользовательского промпта (строка 42)
 ```javascript
 const prompt = `What time is it right now?`;
 ```
-A question that requires using the tool.
+Вопрос, требующий использования инструмента.
 
-### 8. Execute with Functions (Line 45)
+### 8. Выполнение с функциями (строка 45)
 ```javascript
 const a1 = await session.prompt(prompt, {functions});
 console.log("AI: " + a1);
 ```
-- **{functions}** makes tools available to the LLM
-- LLM will automatically call getCurrentTime if needed
-- Response includes tool result processed by LLM
+- **{functions}** делает инструменты доступными для LLM
+- LLM автоматически вызовет getCurrentTime, если нужно
+- Ответ включает результат инструмента, обработанный LLM
 
-### 9. Debug Prompt Context (Lines 49-55)
+### 9. Отладка контекста промпта (строки 49-55)
 ```javascript
 const promptDebugger = new PromptDebugger({
     outputDir: './logs',
@@ -136,26 +136,26 @@ const promptDebugger = new PromptDebugger({
 await promptDebugger.debugContextState({session, model});
 ```
 
-**What this does:**
-- Saves the entire prompt sent to the model
-- Shows exactly what the LLM sees (including function definitions)
-- Useful for debugging why model does/doesn't call functions
-- Writes to `./logs/qwen_prompts_[timestamp].txt`
+**Что это делает:**
+- Сохраняет весь промпт, отправленный модели
+- Показывает точно то, что видит LLM (включая определения функций)
+- Полезно для отладки, почему модель вызывает/не вызывает функции
+- Записывает в `./logs/qwen_prompts_[timestamp].txt`
 
-### 10. Cleanup (Lines 58-61)
+### 10. Очистка (строки 58-61)
 ```javascript
 session.dispose()
 context.dispose()
 model.dispose()
 llama.dispose()
 ```
-Standard cleanup.
+Стандартная очистка.
 
-## Key Concepts Demonstrated
+## Продемонстрированные ключевые концепции
 
-### 1. Function Calling (Tool Use)
+### 1. Вызов функций (использование инструментов)
 
-This is what makes it an "agent":
+Вот что делает это «агентом»:
 ```
 Without tools:          With tools:
 LLM → Text only        LLM → Can take actions
@@ -165,7 +165,7 @@ LLM → Text only        LLM → Can take actions
                        Execute code
 ```
 
-### 2. Function Definition Pattern
+### 2. Паттерн определения функции
 
 ```javascript
 defineChatSessionFunction({
@@ -187,9 +187,9 @@ defineChatSessionFunction({
 });
 ```
 
-### 3. JSON Schema for Parameters
+### 3. JSON Schema для параметров
 
-Uses standard JSON Schema:
+Используется стандартный JSON Schema:
 ```javascript
 // No parameters
 properties: {}
@@ -210,7 +210,7 @@ properties: {
 required: ["a", "b"]
 ```
 
-### 4. Agent Decision Making
+### 4. Принятие решений агентом
 
 ```
 User: "What time is it?"
@@ -235,9 +235,9 @@ User: "What time is it?"
     Final answer: "13:46"
 ```
 
-## Use Cases
+## Случаи использования
 
-### 1. Information Retrieval
+### 1. Получение информации
 ```javascript
 const getWeather = defineChatSessionFunction({
     description: "Get weather for a city",
@@ -253,7 +253,7 @@ const getWeather = defineChatSessionFunction({
 });
 ```
 
-### 2. Calculations
+### 2. Вычисления
 ```javascript
 const calculate = defineChatSessionFunction({
     description: "Perform arithmetic calculation",
@@ -269,7 +269,7 @@ const calculate = defineChatSessionFunction({
 });
 ```
 
-### 3. Data Access
+### 3. Доступ к данным
 ```javascript
 const queryDatabase = defineChatSessionFunction({
     description: "Query user database",
@@ -285,7 +285,7 @@ const queryDatabase = defineChatSessionFunction({
 });
 ```
 
-### 4. External APIs
+### 4. Внешние API
 ```javascript
 const searchWeb = defineChatSessionFunction({
     description: "Search the web",
@@ -301,23 +301,23 @@ const searchWeb = defineChatSessionFunction({
 });
 ```
 
-## Expected Output
+## Ожидаемый вывод
 
-When run:
+При запуске:
 ```
 AI: 13:46
 ```
 
-The LLM:
-1. Called getCurrentTime() internally
-2. Got "1:46:36 PM"
-3. Converted to 24-hour format
-4. Removed seconds
-5. Returned "13:46"
+LLM:
+1. Вызвала getCurrentTime() внутренне
+2. Получила «1:46:36 PM»
+3. Конвертировала в 24-часовой формат
+4. Убрала секунды
+5. Вернула «13:46»
 
-## Debugging with PromptDebugger
+## Отладка с PromptDebugger
 
-The debug output shows the full prompt including function schemas:
+Отладочный вывод показывает полный промпт, включая схемы функций:
 ```
 System: You are a professional chronologist...
 
@@ -328,14 +328,14 @@ Functions available:
 User: What time is it right now?
 ```
 
-This helps debug:
-- Did the model see the function?
-- Was the description clear?
-- Did parameters match expectations?
+Это помогает отладить:
+- Видела ли модель функцию?
+- Было ли описание понятным?
+- Соответствовали ли параметры ожиданиям?
 
-## Why This Matters for AI Agents
+## Почему это важно для AI-агентов
 
-### Agents = LLMs + Tools
+### Агенты = LLM + Инструменты
 
 ```
 LLM alone:                    LLM + Tools:
@@ -347,22 +347,22 @@ LLM alone:                    LLM + Tools:
                               └─ Interact with world
 ```
 
-### Foundation for Complex Agents
+### Фундамент для сложных агентов
 
-This simple example is the foundation for:
-- **Research agents**: Search web, read documents
-- **Coding agents**: Run code, check errors
-- **Personal assistants**: Calendar, email, reminders
-- **Analysis agents**: Query databases, compute statistics
+Этот простой пример является фундаментом для:
+- **Исследовательских агентов**: Веб-поиск, чтение документов
+- **Кодирующих агентов**: Запуск кода, проверка ошибок
+- **Персональных ассистентов**: Календарь, почта, напоминания
+- **Аналитических агентов**: Запросы к базам данных, вычисление статистики
 
-All start with basic function calling!
+Всё начинается с базового вызова функций!
 
-## Best Practices
+## Лучшие практики
 
-1. **Clear descriptions**: LLM uses these to decide when to call
-2. **Type safety**: Use JSON Schema properly
-3. **Error handling**: Handler should catch errors
-4. **Return strings**: LLM processes text best
-5. **Keep functions focused**: One clear purpose per function
+1. **Ясные описания**: LLM использует их для решения, когда вызывать
+2. **Типизация**: Правильно используйте JSON Schema
+3. **Обработка ошибок**: Handler должен ловить ошибки
+4. **Возвращайте строки**: LLM лучше всего обрабатывает текст
+5. **Держите функции фокусированными**: Одна чёткая цель на функцию
 
-This is the minimum viable agent: one LLM + one tool + proper configuration.
+Это минимально жизнеспособный агент: одна LLM + один инструмент + правильная конфигурация.

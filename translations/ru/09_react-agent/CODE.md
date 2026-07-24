@@ -1,20 +1,20 @@
-# Code Explanation: react-agent.js
+# Объяснение кода: react-agent.js
 
-This example implements the **ReAct pattern** (Reasoning + Acting), a powerful approach for multi-step problem-solving with tools.
+Этот пример реализует **паттерн ReAct** (Рассуждение + Действие) — мощный подход для многошагового решения задач с инструментами.
 
-## What is ReAct?
+## Что такое ReAct?
 
-ReAct = **Rea**soning + **Act**ing
+ReAct = **Rea**soning (Рассуждение) + **Act**ing (Действие)
 
-The agent alternates between:
-1. **Thinking** (reasoning about what to do)
-2. **Acting** (using tools)
-3. **Observing** (seeing tool results)
-4. Repeat until problem is solved
+Агент чередует:
+1. **Мышление** (рассуждение о том, что делать)
+2. **Действие** (использование инструментов)
+3. **Наблюдение** (наблюдение за результатами инструментов)
+4. Повтор до решения задачи
 
-## Key Components
+## Ключевые компоненты
 
-### 1. ReAct System Prompt (Lines 20-52)
+### 1. Системный промпт ReAct (строки 20-52)
 ```javascript
 const systemPrompt = `You are a mathematical assistant that uses the ReAct approach.
 
@@ -30,15 +30,15 @@ Thought: [Once you have all information]
 Answer: [Final answer and STOP]
 ```
 
-**Key instructions:**
-- Explicit step-by-step pattern
-- One tool call at a time
-- Continue until final answer
-- Stop after "Answer:"
+**Ключевые инструкции:**
+- Явный пошаговый паттерн
+- Один вызов инструмента за раз
+- Продолжайте до финального ответа
+- Остановитесь после «Answer:»
 
-### 2. Calculator Tools (Lines 60-159)
+### 2. Инструменты-калькуляторы (строки 60-159)
 
-Four basic math operations:
+Четыре базовые математические операции:
 ```javascript
 const add = defineChatSessionFunction({...});
 const multiply = defineChatSessionFunction({...});
@@ -46,13 +46,13 @@ const subtract = defineChatSessionFunction({...});
 const divide = defineChatSessionFunction({...});
 ```
 
-Each tool:
-- Takes two numbers (a, b)
-- Performs operation
-- Logs the call
-- Returns result as string
+Каждый инструмент:
+- Принимает два числа (a, b)
+- Выполняет операцию
+- Логирует вызов
+- Возвращает результат как строку
 
-### 3. ReAct Agent Loop (Lines 164-212)
+### 3. Цикл агента ReAct (строки 164-212)
 
 ```javascript
 async function reactAgent(userPrompt, maxIterations = 10) {
@@ -85,15 +85,15 @@ async function reactAgent(userPrompt, maxIterations = 10) {
 }
 ```
 
-**How it works:**
-1. Loop up to maxIterations times
-2. On first iteration: send user's question
-3. On subsequent iterations: ask to continue
-4. Stream output in real-time
-5. Stop when "Answer:" appears
-6. Return full reasoning trace
+**Как это работает:**
+1. Цикл до maxIterations итераций
+2. На первой итерации: отправляем вопрос пользователя
+3. На последующих итерациях: просим продолжить
+4. Стримим вывод в реальном времени
+5. Останавливаемся, когда появляется «Answer:»
+6. Возвращаем полный след рассуждений
 
-### 4. Example Query (Lines 215-220)
+### 4. Пример запроса (строки 215-220)
 
 ```javascript
 const queries = [
@@ -102,17 +102,17 @@ const queries = [
 ];
 ```
 
-Complex problem requiring multiple calculations:
+Сложная задача, требующая нескольких вычислений:
 - 15 × 8
 - 20 × 8
 - 10 × 8
-- Sum results
-- Calculate average
-- Format answer
+- Суммирование результатов
+- Вычисление среднего
+- Форматирование ответа
 
-## The ReAct Flow
+## Поток ReAct
 
-### Example Execution
+### Пример выполнения
 
 ```
 USER: "A store sells 15 items at $8 each and 20 items at $8 each. Total revenue?"
@@ -137,18 +137,18 @@ Thought: I have the total revenue
 Answer: The total revenue is $280
 ```
 
-**Loop stops** because "Answer:" was detected.
+**Цикл останавливается**, потому что обнаружен «Answer:».
 
-## Why ReAct Works
+## Почему ReAct работает
 
-### Traditional Approach (Fails)
+### Традиционный подход (Проваливается)
 ```
 User: "Complex math problem"
 LLM: [Tries to calculate in head]
 → Often wrong due to arithmetic errors
 ```
 
-### ReAct Approach (Succeeds)
+### Подход ReAct (Успешен)
 ```
 User: "Complex math problem"
 LLM: "I need to calculate X"
@@ -158,37 +158,39 @@ LLM: "I need to calculate X"
   → Continues until solved
 ```
 
-## Key Concepts
+## Ключевые концепции
 
-### 1. Explicit Reasoning
-The agent must "show its work":
+### 1. Явные рассуждения
+Агент должен «показывать свою работу»:
 ```
 Thought: What do I need to do?
 Action: Do it
 Observation: What happened?
 ```
 
-### 2. Tool Use at Each Step
+### 2. Использование инструментов на каждом шаге
+
 ```
 Don't calculate: 15 × 8 = 120 (may be wrong)
 Do calculate: multiply(15, 8) → 120 (always correct)
 ```
 
-### 3. Iterative Problem Solving
+### 3. Итеративное решение задач
+
 ```
 Complex Problem → Break into steps → Solve each step → Combine results
 ```
 
-### 4. Self-Correction
-Agent can observe bad results and try again:
+### 4. Самокоррекция
+Агент может замечать плохие результаты и пробовать снова:
 ```
 Thought: That doesn't look right
 Action: Let me recalculate
 ```
 
-## Debug Output
+## Отладочный вывод
 
-The code includes PromptDebugger (lines 228-234):
+Код включает PromptDebugger (строки 228-234):
 ```javascript
 const promptDebugger = new PromptDebugger({
     outputDir: './logs',
@@ -198,9 +200,9 @@ const promptDebugger = new PromptDebugger({
 await promptDebugger.debugContextState({session, model});
 ```
 
-Saves complete prompt history to logs for debugging.
+Сохраняет полную историю промптов в логи для отладки.
 
-## Expected Output
+## Ожидаемый вывод
 
 ```
 ========================================================
@@ -234,37 +236,37 @@ FINAL ANSWER REACHED
 ========================================================
 ```
 
-## Why This Matters
+## Почему это важно
 
-### Enables Complex Tasks
-- Multi-step reasoning
-- Accurate calculations
-- Self-correction
-- Transparent process
+### Обеспечивает сложные задачи
+- Многошаговые рассуждения
+- Точные вычисления
+- Самокоррекция
+- Прозрачный процесс
 
-### Foundation of Modern Agents
-This pattern powers:
-- LangChain agents
+### Фундамент современных агентов
+Этот паттерн обеспечивает:
+- Агентов LangChain
 - AutoGPT
 - BabyAGI
-- Most production agent frameworks
+- Большинство production-фреймворков агентов
 
-### Observable Reasoning
-Unlike "black box" LLMs, you see:
-- What the agent is thinking
-- Which tools it uses
-- Why it makes decisions
-- Where it might fail
+### Наблюдаемые рассуждения
+В отличие от LLM «чёрного ящика», Вы видите:
+- О чём думает агент
+- Какие инструменты он использует
+- Почему он принимает решения
+- Где он может потерпеть неудачу
 
-## Best Practices
+## Лучшие практики
 
-1. **Clear system prompt**: Define exact pattern
-2. **One tool per action**: Don't combine operations
-3. **Limit iterations**: Prevent infinite loops
-4. **Stream output**: Show progress
-5. **Debug thoroughly**: Use PromptDebugger
+1. **Ясный системный промпт**: Определите точный паттерн
+2. **Один инструмент за действие**: Не комбинируйте операции
+3. **Ограничивайте итерации**: Предотвращайте бесконечные циклы
+4. **Стримим вывод**: Показываем прогресс
+5. **Тщательно отлаживаемся**: Используйте PromptDebugger
 
-## Comparison
+## Сравнение
 
 ```
 Simple Agent vs ReAct Agent
@@ -275,4 +277,4 @@ No visible reasoning        Explicit reasoning
 Works for simple tasks      Handles complex problems
 ```
 
-This is the state-of-the-art pattern for building capable AI agents!
+Это передовой паттерн для создания способных AI-агентов!

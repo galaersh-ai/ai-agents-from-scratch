@@ -1,10 +1,10 @@
-# Code Explanation: coding.js
+# Объяснение кода: coding.js
 
-This file demonstrates **streaming responses** with token limits and real-time output, showing how to get immediate feedback from the LLM as it generates text.
+Этот файл демонстрирует **стриминг ответов** с лимитами токенов и выводом в реальном времени, показывая, как получить немедленную обратную связь от LLM по мере генерации текста.
 
-## Step-by-Step Code Breakdown
+## Пошаговый разбор кода
 
-### 1. Import and Setup (Lines 1-8)
+### 1. Импорт и настройка (строки 1-8)
 ```javascript
 import {
     getLlama,
@@ -16,39 +16,39 @@ import path from "path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 ```
-- Standard setup for LLM interaction
-- **HarmonyChatWrapper**: A chat format wrapper for models that use the Harmony format (more on this below)
+- Стандартная настройка для взаимодействия с LLM
+- **HarmonyChatWrapper**: Обёртка формата чата для моделей, использующих формат Harmony (подробнее ниже)
 
-### 2. Understanding the Harmony Chat Format
+### 2. Понимание формата Harmony Chat
 
-#### What is Harmony?
-Harmony is a structured message format used for multi-role chat interactions designed by OpenAI for their gpt-oss models. It's not just a prompt format - it's a complete rethinking of how models should structure their outputs, especially for complex reasoning and tool use.
+#### Что такое Harmony?
+Harmony — это структурированный формат сообщений для чат-взаимодействий с несколькими ролями, разработанный OpenAI для моделей gpt-oss. Это не просто формат промпта — это полное переосмысление того, как модели должны структурировать свои выводы, особенно для сложных рассуждений и использования инструментов.
 
-#### Harmony Format Structure
+#### Структура формата Harmony
 
-The format uses special tokens and syntax to define roles such as `system`, `developer`, `user`, `assistant`, and `tool`, as well as output "channels" (`analysis`, `commentary`, `final`) that let the model reason internally, call tools, and produce clean user-facing responses.
+Формат использует специальные токены и синтаксис для определения ролей: `system`, `developer`, `user`, `assistant` и `tool`, а также «каналы» вывода (`analysis`, `commentary`, `final`), которые позволяют модели рассуждать внутренне, вызывать инструменты и генерировать чистые ответы для пользователя.
 
-**Basic message structure:**
+**Базовая структура сообщения:**
 ```
 <|start|>ROLE<|message|>CONTENT<|end|>
 <|start|>assistant<|channel|>CHANNEL<|message|>CONTENT<|end|>
 ```
 
-**The five roles in hierarchy order** (system > developer > user > assistant > tool):
+**Пять ролей в порядке иерархии** (system > developer > user > assistant > tool):
 
-1. **system**: Global identity, guardrails, and model configuration
-2. **developer**: Product policy and style instructions (what you typically think of as "system prompt")
-3. **user**: User messages and queries
-4. **assistant**: Model responses
-5. **tool**: Tool execution results
+1. **system**: Глобальная идентичность, ограничения и конфигурация модели
+2. **developer**: Политика продукта и инструкции по стилю (то, что обычно считается «системным промптом»)
+3. **user**: Сообщения и запросы пользователя
+4. **assistant**: Ответы модели
+5. **tool**: Результаты выполнения инструментов
 
-**The three output channels:**
+**Три канала вывода:**
 
-1. **analysis**: Private chain-of-thought reasoning not shown to users
-2. **commentary**: Tool calling preambles and process updates
-3. **final**: Clean user-facing responses
+1. **analysis**: Приватные рассуждения (цепочка мыслей), не показываемые пользователям
+2. **commentary**: Преамбулы вызова инструментов и обновления процесса
+3. **final**: Чистые ответы для пользователя
 
-**Example of Harmony in action:**
+**Пример Harmony в действии:**
 ```
 <|start|>system<|message|>You are a helpful assistant.<|end|>
 <|start|>developer<|message|>Always be concise.<|end|>
@@ -58,18 +58,17 @@ The format uses special tokens and syntax to define roles such as `system`, `dev
 <|start|>assistant<|channel|>final<|message|>The current time is 1:47 PM UTC.<|end|>
 ```
 
-#### Why Use Harmony?
+#### Зачем использовать Harmony?
 
-Harmony separates how the model thinks, what actions it takes, and what finally goes to the user, resulting in cleaner tool use, safer defaults for UI, and better observability. For our translation example:
+Harmony отделяет то, как модель думает, какие действия она предпринимает и что в итоге идёт пользователю. Это приводит к более чистому использованию инструментов, безопасным дефолтам для UI и лучшей наблюдаемости. Для нашего примера перевода:
 
-- The `final` channel ensures we only get the translation, not explanations
-- The structured format helps the model follow instructions more reliably
-- The role hierarchy prevents instruction conflicts
+- Канал `final` гарантирует, что мы получим только перевод, без объяснений
+- Структурированный формат помогает модели более надёжно следовать инструкциям
+- Иерархия ролей предотвращает конфликты инструкций
 
-**Important Note**: Models need to be specifically trained or fine-tuned to produce Harmony output correctly. You can't just apply this format to any model. Apertus and other models not explicitly trained on Harmony may be confused by this structure, but the HarmonyChatWrapper in node-llama-cpp handles the necessary formatting automatically.
+**Важное примечание**: Модели должны быть специально обучены или дообучены для корректного генерирования вывода Harmony. Нельзя просто применить этот формат к любой модели. Apertus и другие модели, не обученные на Harmony, могут быть смущены этой структурой, но HarmonyChatWrapper в node-llama-cpp автоматически обрабатывает необходимое форматирование.
 
-
-### 3. Load Model (Lines 10-18)
+### 3. Загрузка модели (строки 10-18)
 ```javascript
 const llama = await getLlama();
 const model = await llama.loadModel({
@@ -81,11 +80,11 @@ const model = await llama.loadModel({
     )
 });
 ```
-- Uses **gpt-oss-20b**: A 20 billion parameter model
-- **MXFP4**: Mixed precision 4-bit quantization for smaller size
-- Larger model = better code explanations
+- Использует **gpt-oss-20b**: модель с 20 миллиардами параметров
+- **MXFP4**: Смешанная 4-битная квантизация для меньшего размера
+- Более крупная модель = лучшие объяснения кода
 
-### 4. Create Context and Session (Lines 19-22)
+### 4. Создание контекста и сессии (строки 19-22)
 ```javascript
 const context = await model.createContext();
 const session = new LlamaChatSession({
@@ -93,23 +92,23 @@ const session = new LlamaChatSession({
     contextSequence: context.getSequence(),
 });
 ```
-Basic session setup with no system prompt.
+Базовая настройка сессии без системного промпта.
 
-### 5. Define the Question (Line 24)
+### 5. Определение вопроса (строка 24)
 ```javascript
 const q1 = `What is hoisting in JavaScript? Explain with examples.`;
 ```
-A technical programming question that requires detailed explanation.
+Технический вопрос по программированию, требующий детального объяснения.
 
-### 6. Display Context Size (Line 26)
+### 6. Отображение размера контекста (строка 26)
 ```javascript
 console.log('context.contextSize', context.contextSize)
 ```
-- Shows the maximum context window size
-- Helps understand memory limitations
-- Useful for debugging
+- Показывает максимальный размер контекстного окна
+- Помогает понять ограничения памяти
+- Полезно для отладки
 
-### 7. Streaming Prompt Execution (Lines 28-36)
+### 7. Стриминговый выполнение промпта (строки 28-36)
 ```javascript
 const a1 = await session.prompt(q1, {
     // Tip: let the lib choose or cap reasonably; using the whole context size can be wasteful
@@ -122,21 +121,21 @@ const a1 = await session.prompt(q1, {
 });
 ```
 
-**Key parameters:**
+**Ключевые параметры:**
 
 **maxTokens: 2000**
-- Limits response length to 2000 tokens (~1500 words)
-- Prevents runaway generation
-- Saves time and compute
-- Without limit: model uses entire context
+- Ограничивает длину ответа 2000 токенов (~1500 слов)
+- Предотвращает бесконечную генерацию
+- Экономит время и вычислительные ресурсы
+- Без лимита: модель использует весь контекст
 
-**onTextChunk callback**
-- Fires **as each token is generated**
-- Receives text as it's produced
-- `process.stdout.write()`: Prints without newlines
-- Creates real-time "typing" effect
+**Колбэк onTextChunk**
+- Срабатывает **при генерации каждого токена**
+- Получает текст по мере его создания
+- `process.stdout.write()`: Печатает без переводов строки
+- Создаёт эффект печати в реальном времени
 
-### How Streaming Works
+### Как работает стриминг
 
 ```
 Without streaming:
@@ -148,34 +147,34 @@ User → [Token 1] → [Token 2] → [Token 3] → ... → Complete
        (Immediate feedback!)
 ```
 
-### 8. Display Final Answer (Line 38)
+### 8. Отображение финального ответа (строка 38)
 ```javascript
 console.log("\n\nFinal answer:\n", a1);
 ```
-- Prints the complete response again
-- Useful for logging or verification
-- Shows full text after streaming
+- Печатает полный ответ ещё раз
+- Полезно для логирования или верификации
+- Показывает полный текст после стриминга
 
-### 9. Cleanup (Lines 41-44)
+### 9. Очистка (строки 41-44)
 ```javascript
 session.dispose()
 context.dispose()
 model.dispose()
 llama.dispose()
 ```
-Standard resource cleanup.
+Стандартная очистка ресурсов.
 
-## Key Concepts Demonstrated
+## Продемонстрированные ключевые концепции
 
-### 1. Streaming Responses
+### 1. Стриминг ответов
 
-**Why streaming matters:**
-- **Better UX**: Users see progress immediately
-- **Early termination**: Can stop if response is off-track
-- **Perceived speed**: Feels faster than waiting
-- **Debugging**: See generation in real-time
+**Почему стриминг важен:**
+- **Лучший UX**: Пользователи видят прогресс немедленно
+- **Ранняя остановка**: Можно остановить, если ответ идёт не по плану
+- **Воспринимаемая скорость**: Выглядит быстрее ожидания
+- **Отладка**: Наблюдайте за генерацией в реальном времени
 
-**Comparison:**
+**Сравнение:**
 ```
 Non-streaming:           Streaming:
 ═══════════════         ═══════════════
@@ -187,9 +186,9 @@ Complete response       "is" (0.2s)
                         (Same total time, better experience!)
 ```
 
-### 2. Token Limits
+### 2. Лимиты токенов
 
-**maxTokens controls generation length:**
+**maxTokens контролирует длину генерации:**
 
 ```
 No limit:               With limit (2000):
@@ -199,14 +198,14 @@ Uses entire context    Saves computation
 Unpredictable cost     Predictable cost
 ```
 
-**Token approximation:**
-- 1 token ≈ 0.75 words (English)
-- 2000 tokens ≈ 1500 words
-- 4-5 paragraphs of detailed explanation
+**Приблизительный подсчёт токенов:**
+- 1 токен ≈ 0.75 слов (на английском)
+- 2000 токенов ≈ 1500 слов
+- 4-5 абзацев детального объяснения
 
-### 3. Real-Time Feedback Pattern
+### 3. Паттерн обратной связи в реальном времени
 
-The `onTextChunk` callback enables:
+Колбэк `onTextChunk` обеспечивает:
 ```javascript
 onTextChunk: (text) => {
     // Do anything with each chunk:
@@ -217,18 +216,18 @@ onTextChunk: (text) => {
 }
 ```
 
-### 4. Context Size Awareness
+### 4. Осведомлённость о размере контекста
 
 ```javascript
 console.log('context.contextSize', context.contextSize)
 ```
 
-Shows model's memory capacity:
-- Small models: 2048-4096 tokens
-- Medium models: 8192-16384 tokens  
-- Large models: 32768+ tokens
+Показывает объём памяти модели:
+- Маленькие модели: 2048-4096 токенов
+- Средние модели: 8192-16384 токенов
+- Большие модели: 32768+ токенов
 
-**Why it matters:**
+**Почему это важно:**
 ```
 Context Size: 4096 tokens
 Prompt: 100 tokens
@@ -236,29 +235,29 @@ Max response: 2000 tokens
 History: Up to 1996 tokens
 ```
 
-## Use Cases
+## Случаи использования
 
-### 1. Code Explanations (This Example)
+### 1. Объяснение кода (этот пример)
 ```javascript
 prompt: "Explain hoisting in JavaScript"
 → Streams detailed explanation with examples
 ```
 
-### 2. Long-Form Content Generation
+### 2. Генерация длинного контента
 ```javascript
 prompt: "Write a blog post about AI agents"
 maxTokens: 3000
 → Streams article as it's written
 ```
 
-### 3. Interactive Tutoring
+### 3. Интерактивное наставничество
 ```javascript
 // User sees explanation being built
 prompt: "Teach me about closures"
 onTextChunk: (text) => displayToUser(text)
 ```
 
-### 4. Web Applications
+### 4. Веб-приложения
 ```javascript
 // Server-Sent Events or WebSocket
 onTextChunk: (text) => {
@@ -266,17 +265,17 @@ onTextChunk: (text) => {
 }
 ```
 
-## Performance Considerations
+## Соображения по производительности
 
-### Token Generation Speed
+### Скорость генерации токенов
 
-Depends on:
-- **Model size**: Larger = slower per token
-- **Hardware**: GPU > CPU
-- **Quantization**: Lower bits = faster
-- **Context length**: Longer context = slower
+Зависит от:
+- **Размера модели**: Больше = медленнее за токен
+- **Оборудования**: GPU > CPU
+- **Квантизации**: Меньше бит = быстрее
+- **Длины контекста**: Длиннее контекст = медленнее
 
-**Typical speeds:**
+**Типичные скорости:**
 ```
 Model Size    GPU (RTX 4090)    CPU (M2 Max)
 ──────────    ──────────────    ────────────
@@ -285,7 +284,7 @@ Model Size    GPU (RTX 4090)    CPU (M2 Max)
 20B           10-15 tok/s       2-4 tok/s
 ```
 
-### When to Use maxTokens
+### Когда использовать maxTokens
 
 ```
 ✓ Use maxTokens when:
@@ -300,9 +299,9 @@ Model Size    GPU (RTX 4090)    CPU (M2 Max)
   • Using stop sequences instead
 ```
 
-## Advanced Streaming Patterns
+## Продвинутые паттерны стриминга
 
-### Pattern 1: Progressive Enhancement
+### Паттерн 1: Прогрессивное улучшение
 ```javascript
 let buffer = '';
 onTextChunk: (text) => {
@@ -315,7 +314,7 @@ onTextChunk: (text) => {
 }
 ```
 
-### Pattern 2: Early Stopping
+### Паттерн 2: Ранняя остановка
 ```javascript
 let isRelevant = true;
 onTextChunk: (text) => {
@@ -326,7 +325,7 @@ onTextChunk: (text) => {
 }
 ```
 
-### Pattern 3: Multi-Consumer
+### Паттерн 3: Мульти-потребитель
 ```javascript
 onTextChunk: (text) => {
     console.log(text);           // Console
@@ -336,14 +335,14 @@ onTextChunk: (text) => {
 }
 ```
 
-## Expected Output
+## Ожидаемый вывод
 
-When run, you'll see:
-1. Context size logged (e.g., "context.contextSize 32768")
-2. Streaming response appearing token-by-token
-3. Complete final answer printed again
+При запуске Вы увидите:
+1. Размер контекста в логе (например, «context.contextSize 32768»)
+2. Стриминговый ответ, появляющийся по токену
+3. Полный финальный ответ, напечатанный снова
 
-Example output flow:
+Пример вывода:
 ```
 context.contextSize 32768
 Hoisting is a JavaScript mechanism where variables and function 
@@ -360,21 +359,21 @@ Final answer:
 [Complete response printed again]
 ```
 
-## Why This Matters for AI Agents
+## Почему это важно для AI-агентов
 
-### User Experience
-- Real-time agents feel more responsive
-- Users can interrupt if going wrong direction
-- Better for conversational interfaces
+### Пользовательский опыт
+- Агенты реального времени выглядят более отзывчивыми
+- Пользователи могут прервать, если агент идёт не в том направлении
+- Лучше подходит для разговорных интерфейсов
 
-### Resource Management
-- Token limits prevent runaway generation
-- Predictable costs and timing
-- Can cancel expensive operations early
+### Управление ресурсами
+- Лимиты токенов предотвращают бесконечную генерацию
+- Предсказуемые стоимость и тайминги
+- Можно рано отменить дорогие операции
 
-### Integration Patterns
-- Web UIs show "typing" effect
-- CLIs display progressive output
-- APIs stream to clients efficiently
+### Паттерны интеграции
+- Веб-UI показывают эффект «печати»
+- CLI отображают прогрессивный вывод
+- API эффективно стримят клиентам
 
-This pattern is essential for production agent systems where user experience and resource control matter.
+Этот паттерн необходим для production-систем агентов, где важны пользовательский опыт и контроль ресурсов.

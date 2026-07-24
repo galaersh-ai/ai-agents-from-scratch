@@ -1,33 +1,34 @@
-# Concept: Atom of Thought (AoT) Pattern for AI Agents
+# Концепция: Паттерн «Атом рассуждений» (AoT) для AI-агентов
 
-## The Core Idea
+## Ключевая идея
 
-**Atom of Thought = "SQL for Reasoning"**
+**Атом рассуждений = «SQL для рассуждений»**
 
-Just as SQL breaks complex data operations into atomic, composable statements, AoT breaks reasoning into minimal, executable steps.
+Так же как SQL разбивает сложные операции с данными на атомарные, композитные инструкции, AoT разбивает рассуждения на минимальные, исполняемые шаги.
 
-## What is an Atom?
+## Что такое атом?
 
-An atom is the **smallest unit of reasoning** that:
-1. Expresses exactly **one** idea
-2. Can be **validated independently**
-3. Can be **executed deterministically**
-4. **Cannot hide** a mistake
+Атом — это **最小ая единица рассуждений**, которая:
+1. Выражает ровно **одну** идею
+2. Может быть **проверена независимо**
+3. Может быть **выполнена детерминированно**
+4. **Не может скрыть** ошибку
 
-### Examples
+### Примеры
 
-❌ **Not atomic** (compound statement):
+❌ **Не атомарно** (составное утверждение):
 ```
 "Search for rooms in Graz and filter by capacity"
 ```
 
-✅ **Atomic** (separate steps):
+✅ **Атомарно** (отдельные шаги):
 ```
 1. Search for rooms in Graz
 2. Filter rooms by minimum capacity of 30
 ```
 
-## The Three Layers
+## Три слоя
+
 ```
 ┌─────────────────────────────────┐
 │   LLM (Planning Layer)          │
@@ -48,39 +49,40 @@ An atom is the **smallest unit of reasoning** that:
 └─────────────────────────────────┘
 ```
 
-## Why Separation Matters
+## Почему разделение важно
 
-### Traditional LLM Approach (ReAct)
+### Традиционный подход LLM (ReAct)
 ```
 LLM thinks → LLM acts → LLM thinks → LLM acts
 ```
-**Problem:** Execution logic lives inside the model (black box)
+**Проблема**: Логика выполнения живёт внутри модели (чёрный ящик)
 
-### Atom of Thought Approach
+### Подход «Атом рассуждений»
 ```
 LLM plans → System validates → System executes
 ```
-**Benefit:** Execution logic lives in code (white box)
+**Преимущество**: Логика выполнения живёт в коде (белый ящик)
 
-## Mental Model
+## Ментальная модель
 
-Think of AoT as the difference between:
+Представьте AoT как разницу между:
 
-| Cooking | Programming |
-|---------|------------|
-| **Recipe** (AoT plan) | **Algorithm** |
-| "Boil water" | `boilWater()` |
-| "Add pasta" | `addPasta()` |
-| "Cook 8 minutes" | `cook(8)` |
+| Кулинария | Программирование |
+|-----------|-------------------|
+| **Рецепт** (план AoT) | **Алгоритм** |
+| «Кипятить воду» | `boilWater()` |
+| «Добавить пасту» | `addPasta()` |
+| «Варить 8 минут» | `cook(8)` |
 
 vs.
 
-| Improvising | Natural Language |
-|-------------|------------------|
-| "Make dinner" | "Figure it out" |
-| (figure it out) | (hallucinate) |
+| Импровизация | Естественный язык |
+|--------------|-------------------|
+| «Приготовь ужин» | «Разберись сам» |
+| (разбирайтесь) | (галлюцинируйте) |
 
-## The Atom Structure
+## Структура атома
+
 ```javascript
 {
   "id": 2,
@@ -94,16 +96,17 @@ vs.
 }
 ```
 
-**Why this structure?**
-- `id`: Establishes order
-- `kind`: Categorizes operation type
-- `name`: References executable function
-- `input`: Makes data flow explicit
-- `dependsOn`: Declares dependencies
+**Почему такая структура?**
+- `id`: Устанавливает порядок
+- `kind`: Категоризирует тип операции
+- `name`: Ссылается на исполняемую функцию
+- `input`: Делает поток данных явным
+- `dependsOn`: Объявляет зависимости
 
-## Dependency Graph
+## Граф зависимостей
 
-Atoms form a **directed acyclic graph (DAG)**:
+Атомы формируют **направленный ациклический граф (DAG)**:
+
 ```
      ┌─────┐
      │  1  │ add(15, 7)
@@ -122,13 +125,14 @@ Atoms form a **directed acyclic graph (DAG)**:
      └─────┘
 ```
 
-**Properties:**
-- Can be executed in topological order
-- Can parallelize independent branches
-- Failures stop at failed node
-- Easy to visualize and debug
+**Свойства:**
+- Может выполняться в топологическом порядке
+- Можно параллелизировать независимые ветки
+- Сбои останавливаются на упавшем узле
+- Легко визуализировать и отлаживать
 
-## State Management
+## Управление состоянием
+
 ```javascript
 const state = {};
 
@@ -142,17 +146,18 @@ state[2] = 66;  // result of multiply(22, 3)
 state[3] = 56;  // result of subtract(66, 10)
 ```
 
-**State is:**
-- Explicit (key-value map)
-- Immutable per atom (no overwrites)
-- Traceable (full history)
-- Inspectable (debugging)
+**Состояние:**
+- Явное (отображение ключ-значение)
+- Неизменяемое для каждого атома (без перезаписи)
+- Отслеживаемое (полная история)
+- Инспектируемое (отладка)
 
-## Comparison: AoT vs ReAct
+## Сравнение: AoT vs ReAct
 
-### Question: "What is (15 + 7) × 3 - 10?"
+### Вопрос: «Что такое (15 + 7) × 3 - 10?»
 
-#### ReAct Output (text):
+#### Вывод ReAct (текст):
+
 ```
 Thought: I need to add 15 and 7 first
 Action: add(15, 7)
@@ -166,7 +171,8 @@ Observation: 56
 Answer: 56
 ```
 
-#### AoT Output (JSON):
+#### Вывод AoT (JSON):
+
 ```json
 {
   "atoms": [
@@ -178,49 +184,49 @@ Answer: 56
 }
 ```
 
-### Key Differences
+### Ключевые различия
 
-| Aspect | ReAct | AoT |
+| Аспект | ReAct | AoT |
 |--------|-------|-----|
-| **Format** | Natural language | Structured data |
-| **Validation** | Impossible | Before execution |
-| **Testing** | Mock entire LLM | Test executor independently |
-| **Debugging** | Read through text | Inspect atom N |
-| **Replay** | Re-run entire conversation | Re-run from any atom |
-| **Audit trail** | Conversational history | Data structure |
+| **Формат** | Естественный язык | Структурированные данные |
+| **Валидация** | Невозможна | До выполнения |
+| **Тестирование** | Мокать всю LLM | Тестировать исполнитель независимо |
+| **Отладка** | Читать через текст | Инспектировать атом N |
+| **Воспроизведение** | Перезапуск всего разговора | Перезапуск с любого атома |
+| **Аудит** | История разговора | Структура данных |
 
-## When AoT Shines
+## Когда AoT сияет
 
-### ✅ Perfect for:
-- **Multi-step workflows** (booking, pipelines)
-- **API orchestration** (call A, then B with A's result)
-- **Financial transactions** (auditable, reversible)
-- **Compliance-sensitive systems** (every step logged)
-- **Production agents** (failures must be clean)
+### ✅ Идеально для:
+- **Многошаговых рабочих процессов** (бронирование, конвейеры)
+- **Оркестрации API** (вызвать A, затем B с результатом A)
+- **Финансовых транзакций** (аудируемые, обратимые)
+- **Систем, чувствительных к комплаенсу** (каждый шаг залогирован)
+- **Production-агентов** (сбои должны быть чистыми)
 
-### ❌ Not ideal for:
-- **Creative writing**
-- **Open-ended exploration**
-- **Brainstorming**
-- **Single-step queries**
+### ❌ Не подходит для:
+- **Творческого письма**
+- **Свободного исследования**
+- **Брейншторминга**
+- **Одноразовых запросов**
 
-## Real-World Analogy
+## Аналогия из реального мира
 
-**ReAct is like a chef improvising:**
-- Flexible
-- Creative
-- Hard to replicate exactly
-- Mistakes hidden in process
+**ReAct — как повар-импровизатор:**
+- Гибко
+- Творчески
+- Трудно воспроизвести точно
+- Ошибки скрыты в процессе
 
-**AoT is like following a recipe:**
-- Repeatable
-- Testable
-- Step X failed? Start from step X-1
-- Every ingredient and action is explicit
+**AoT — как следование рецепту:**
+- Воспроизводимо
+- Тестируемо
+- Шаг X упал? Начните с шага X-1
+- Каждый ингредиент и действие явные
 
-## The Hidden Benefit: Debuggability
+## Скрытое преимущество: отлаживаемость
 
-When something goes wrong:
+Когда что-то идёт не так:
 
 **ReAct:**
 ```
@@ -239,27 +245,27 @@ When something goes wrong:
 → Re-run from atom 3
 ```
 
-## Implementation Checklist
+## Чек-лист реализации
 
-✅ **LLM side:**
-- [ ] System prompt enforces JSON output
-- [ ] Grammar constrains to valid schema
-- [ ] Atoms are minimal (one operation each)
-- [ ] Dependencies are explicit
+✅ **Сторона LLM:**
+- [ ] Системный промпт обеспечивает JSON-вывод
+- [ ] Грамматика ограничивает валидной схемой
+- [ ] Атомы минимальные (по одной операции каждый)
+- [ ] Зависимости явные
 
-✅ **System side:**
-- [ ] Validator checks tool names
-- [ ] Validator checks dependencies
-- [ ] Executor resolves references
-- [ ] Executor is deterministic
-- [ ] State is immutable
+✅ **Системная сторона:**
+- [ ] Валидатор проверяет имена инструментов
+- [ ] Валидатор проверяет зависимости
+- [ ] Исполнитель разрешает ссылки
+- [ ] Исполнитель детерминирован
+- [ ] Состояние неизменяемо
 
-## The Bottom Line
+## Суть
 
-**ReAct asks:**
-"What would an intelligent agent say next?"
+**ReAct спрашивает:**
+«Что сказал бы умный агент дальше?»
 
-**AoT asks:**
-"What is the minimal, executable plan?"
+**AoT спрашивает:**
+«Каков минимальный, исполняемый план?»
 
-For production systems, you want the second question.
+Для production-систем Вам нужен второй вопрос.

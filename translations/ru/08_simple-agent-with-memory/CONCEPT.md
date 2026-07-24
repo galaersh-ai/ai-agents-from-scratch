@@ -1,10 +1,10 @@
-# Concept: Persistent Memory & State Management
+# Концепция: Постоянная память и управление состоянием
 
-## Overview
+## Обзор
 
-Adding persistent memory transforms agents from stateless responders into systems that can maintain context and relationships across sessions.
+Добавление постоянной памяти превращает агентов из реагирующих без состояния в системы, способные поддерживать контекст и отношения между сессиями.
 
-## The Memory Problem
+## Проблема памяти
 
 ```
 Without Memory              With Memory
@@ -18,7 +18,7 @@ Session 2:                  Session 2:
 "I don't know"             "Alex!" ✓
 ```
 
-## Architecture
+## Архитектура
 
 ```
 ┌─────────────────────────────────┐
@@ -45,9 +45,10 @@ Session 2:                  Session 2:
 └─────────────────────────────────┘
 ```
 
-## How It Works
+## Как это работает
 
-### 1. Startup
+### 1. При запуске
+
 ```
 1. Load agent-memory.json
 2. Extract facts and preferences
@@ -55,7 +56,8 @@ Session 2:                  Session 2:
 4. Agent "remembers" past information
 ```
 
-### 2. During Conversation
+### 2. Во время разговора
+
 ```
 User shares information
        ↓
@@ -68,9 +70,9 @@ Saved to JSON file
 Available in future sessions
 ```
 
-### 3. Memory Types
+### 3. Типы памяти
 
-**Facts**: General information
+**Факты**: Общая информация
 ```json
 {
   "memories": [
@@ -85,7 +87,7 @@ Available in future sessions
 }
 ```
 
-**Preferences**: 
+**Предпочтения**: 
 ```json
 {
   "memories": [
@@ -100,9 +102,10 @@ Available in future sessions
 }
 ```
 
-## Memory Integration Pattern
+## Паттерн интеграции памяти
 
-### System Prompt Enhancement
+### Улучшение системного промпта
+
 ```
 Base Prompt:
 "You are a helpful assistant."
@@ -116,7 +119,8 @@ Known Facts:
 - User loves pizza"
 ```
 
-### Tool-Assisted Saving
+### Сохранение с помощью инструмента
+
 ```
 Agent decides when to save:
 User: "My favorite color is blue"
@@ -126,93 +130,93 @@ Agent: "I should remember this"
 Calls: saveMemory(type="preference", key="color", content="blue")
 ```
 
-## Real-World Applications
+## Практические применения
 
-**Personal Assistant**
-- Remember appointments, preferences, contacts
-- Personalized responses based on history
+**Персональный ассистент**
+- Запоминание встреч, предпочтений, контактов
+- Персонализированные ответы на основе истории
 
-**Customer Service**
-- Past interactions and issues
-- Customer preferences and context
+**Служба поддержки клиентов**
+- Прошлые взаимодействия и проблемы
+- Предпочтения и контекст клиентов
 
-**Learning Tutor**
-- Student progress and weak areas
-- Adapted teaching based on history
+**Образовательный наставник**
+- Прогресс ученика и слабые области
+- Адаптированное обучение на основе истории
 
-**Healthcare Assistant**
-- Medical history
-- Medication reminders
-- Health tracking
+**Медицинский ассистент**
+- История болезни
+- Напоминания о лекарствах
+- Отслеживание здоровья
 
-## Memory Strategies
+## Стратегии памяти
 
-### 1. Episodic Memory
-Store specific events and conversations:
+### 1. Эпизодическая память
+Хранение конкретных событий и разговоров:
 ```
 - "On 2025-01-15, user asked about Python"
 - "User struggled with async concepts"
 ```
 
-### 2. Semantic Memory
-Store facts and knowledge:
+### 2. Семантическая память
+Хранение фактов и знаний:
 ```
 - "User is a software engineer"
 - "User prefers TypeScript over JavaScript"
 ```
 
-### 3. Procedural Memory
-Store how-to information:
+### 3. Процедурная память
+Хранение информации о том, как делать:
 ```
 - "User's workflow: design → code → test"
 - "User's preferred tools: VS Code, Git"
 ```
 
-## Challenges & Solutions
+## Проблемы и решения
 
-### Challenge 1: Memory Bloat
-**Problem**: Too many memories slow down agent
-**Solution**: 
-- Importance scoring
-- Periodic cleanup
-- Summary compression
+### Проблема 1: Раздутие памяти
+**Проблема**: Слишком много воспоминаний замедляют агента
+**Решение**: 
+- Оценка важности
+- Периодическая очистка
+- Сжатие сводок
 
-### Challenge 2: Conflicting Information
-**Problem**: "User likes pizza" vs "User is vegan"
-**Solution**:
-- Timestamps for recency
-- Explicit updates
-- Conflict resolution logic
+### Проблема 2: Конфликтующая информация
+**Проблема**: «Пользователь любит пиццу» vs «Пользователь веган»
+**Решение**:
+- Временные метки для актуальности
+- Явные обновления
+- Логика разрешения конфликтов
 
-### Challenge 3: Privacy
-**Problem**: Sensitive information in memory
-**Solution**:
-- Encryption at rest
-- Access controls
-- Expiration policies
+### Проблема 3: Приватность
+**Проблема**: Чувствительная информация в памяти
+**Решение**:
+- Шифрование на диске
+- Контроль доступа
+- Политики истечения
 
-## Key Concepts
+## Ключевые концепции
 
-### 1. Persistence
-Memory survives:
-- Application restarts
-- System reboots
-- Time gaps
+### 1. Персистентность
+Память переживает:
+- Перезапуск приложения
+- Перезагрузку системы
+- Временные разрывы
 
-### 2. Context Augmentation
-Memories enhance system prompt:
+### 2. Расширение контекста
+Воспоминания улучшают системный промпт:
 ```
 Prompt = Base + Memories + User Input
 ```
 
-### 3. Agent-Driven Storage
-Agent decides what to remember:
+### 3. Управление агентом
+Агент решает, что запоминать:
 ```
 Important? → Save
 Trivial? → Ignore
 ```
 
-## Evolution Path
+## Путь эволюции
 
 ```
 1. Stateless → Each interaction independent
@@ -222,15 +226,15 @@ Trivial? → Ignore
 5. Semantic search → Find relevant memories
 ```
 
-## Best Practices
+## Лучшие практики
 
-1. **Structure memory**: Use types (facts, preferences, events)
-2. **Add timestamps**: Know when information was saved
-3. **Enable updates**: Allow overwriting old information
-4. **Implement search**: Find relevant memories efficiently
-5. **Monitor size**: Prevent unbounded growth
+1. **Структурируйте память**: Используйте типы (факты, предпочтения, события)
+2. **Добавляйте временные метки**: Знайте, когда была сохранена информация
+3. **Включайте обновления**: Позвольте перезаписывать старую информацию
+4. **Реализуйте поиск**: Эффективно находите релевантные воспоминания
+5. **Мониторьте размер**: Предотвращайте бесконечный рост
 
-## Comparison
+## Сравнение
 
 ```
 Feature              Simple Agent    Memory Agent
@@ -242,8 +246,8 @@ Context continuity   ✗               ✓
 Cross-session state  ✗               ✓
 ```
 
-## Key Takeaway
+## Ключевой вывод
 
-Memory transforms agents from tools into assistants. They can build relationships, provide personalized experiences, and maintain context over time.
+Память превращает агентов из инструментов в ассистентов. Они могут выстраивать отношения, обеспечивать персонализированный опыт и поддерживать контекст во времени.
 
-This is essential for production AI agent systems.
+Это необходимо для production-систем AI-агентов.

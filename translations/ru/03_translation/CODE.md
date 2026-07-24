@@ -1,10 +1,10 @@
-# Code Explanation: translation.js
+# Объяснение кода: translation.js
 
-This file demonstrates how to use **system prompts** to specialize an AI agent for a specific task - in this case, professional German translation.
+Этот файл демонстрирует, как использовать **системные промпты** для специализации AI-агента на конкретной задаче — в данном случае, профессиональном переводе на немецкий.
 
-## Step-by-Step Code Breakdown
+## Пошаговый разбор кода
 
-### 1. Import Required Modules
+### 1. Импорт необходимых модулей
 ```javascript
 import {
   getLlama, LlamaChatSession,
@@ -12,9 +12,9 @@ import {
 import {fileURLToPath} from "url";
 import path from "path";
 ```
-- Imports are the same as the intro example
+- Импорты аналогичны примеру intro
 
-### 2. Initialize and Load Model
+### 2. Инициализация и загрузка модели
 ```javascript
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -29,22 +29,22 @@ const model = await llama.loadModel({
 });
 ```
 
-#### Why Apertus-8B?
-Apertus-8B is a multilingual language model specifically trained to support over 1,000 languages, with 40% of its training data in non-English languages. This makes it an excellent choice for translation tasks because:
+#### Почему Apertus-8B?
+Apertus-8B — это многоязычная языковая модель, специально обученная поддерживать более 1000 языков, причём 40% её обучающих данных составляют неанглийские языки. Это делает её отличным выбором для задач перевода, потому что:
 
-1. **Massive Multilingual Coverage**: The model was trained on 15 trillion tokens across 1,811 natively supported languages, including underrepresented languages like Swiss German and Romansh
-2. **Larger Size**: With 8 billion parameters, it's larger than the intro.js example, providing better understanding and output quality
-3. **Translation-Focused Training**: The model was explicitly designed for applications including translation systems
-4. **Q6_K Quantization**: 6-bit quantization provides a good balance between quality and file size
+1. **Массивное многоязычное покрытие**: Модель обучена на 15 триллионах токенов на 1811 нативно поддерживаемых языках, включая малоизученные языки, такие как швейцарский немецкий и романш
+2. **Большой размер**: С 8 миллиардами параметров она больше, чем модель в примере intro.js, обеспечивая лучшее понимание и качество вывода
+3. **Обучение на переводе**: Модель была специально разработана для приложений, включая системы перевода
+4. **Квантизация Q6_K**: 6-битная квантизация обеспечивает хороший баланс между качеством и размером файла
 
-**Experiment suggestion**: Try swapping this model with others to compare translation quality! For example:
-- Use a smaller 3B model to see how size affects translation accuracy
-- Use a monolingual model to demonstrate why multilingual training matters
-- Use a general-purpose model without translation-specific training
+**Предложение по эксперименту**: Попробуйте заменить эту модель на другие для сравнения качества перевода! Например:
+- Используйте модель поменьше (3B), чтобы увидеть, как размер влияет на точность перевода
+- Используйте одноязычную модель, чтобы продемонстрировать важность многоязычного обучения
+- Используйте универсальную модель без специализированного обучения на переводе
 
-Read more about Apertus [arXiv](https://arxiv.org/abs/2509.14233)
+Подробнее об Apertus: [arXiv](https://arxiv.org/abs/2509.14233)
 
-### 3. Create Context and Chat Session with System Prompt
+### 3. Создание контекста и чат-сессии с системным промптом
 ```javascript
 const context = await model.createContext();
 const session = new LlamaChatSession({
@@ -53,10 +53,10 @@ const session = new LlamaChatSession({
 });
 ```
 
-**Key difference from intro.js**: The **systemPrompt**!
+**Ключевое отличие от intro.js**: **systemPrompt**!
 
-#### What is a System Prompt?
-The system prompt defines the agent's role, behavior, and rules. It's like giving the AI a job description:
+#### Что такое системный промпт?
+Системный промпт определяет роль, поведение и правила агента. Это как дать AI должностную инструкцию:
 
 ```
 ┌─────────────────────────────────────┐
@@ -69,42 +69,42 @@ The system prompt defines the agent's role, behavior, and rules. It's like givin
     Affects every response
 ```
 
-### 4. The System Prompt Breakdown
+### 4. Разбор системного промпта
 
-The system prompt (in German) tells the model:
+Системный промпт (на немецком) говорит модели:
 
-**Role:**
+**Роль:**
 ```
 "Du bist ein erfahrener wissenschaftlicher Übersetzer für technische Texte 
 aus dem Englischen ins Deutsche."
 ```
-Translation: "You are an experienced scientific translator for technical texts from English to German."
+Перевод: «Вы — опытный научный переводчик технических текстов с английского на немецкий.»
 
-**Task:**
+**Задача:**
 ```
 "Deine Aufgabe: Erstelle eine inhaltlich exakte Übersetzung..."
 ```
-Translation: "Your task: Create a content-accurate translation that maintains full meaning and technical precision."
+Перевод: «Ваша задача: Создайте содержательно точный перевод, сохраняющий полный смысл и техническую точность.»
 
-**Rules (Lines 33-41):**
-1. Preserve every technical statement exactly
-2. Use idiomatic, fluent German
-3. Avoid literal sentence structures
-4. Use correct terminology (e.g., "Multi-Agenten-System")
-5. Use German typography for numbers (e.g., "54 %")
-6. Adapt compound terms to German grammar
-7. Shorten overly complex sentences while preserving meaning
-8. Use neutral, scientific style
+**Правила (строки 33-41):**
+1. Сохранять каждое техническое утверждение точно
+2. Использовать идиоматичный, плавный немецкий
+3. Избегать дословных структур предложений
+4. Использовать правильную терминологию (например, «Multi-Agenten-System»)
+5. Использовать немецкую типографику для чисел (например, «54 %»)
+6. Адаптировать составные термины к немецкой грамматике
+7. Сокращать слишком сложные предложения, сохраняя смысл
+8. Использовать нейтральный, научный стиль
 
-**Critical Instruction (Line 48):**
+**Критичная инструкция (строка 48):**
 ```
 "DO NOT add any addition text or explanation. ONLY respond with the translated text"
 ```
-- Forces the model to return ONLY the translation
-- No "Here's the translation:" prefix
-- No explanations or commentary
+- Заставляет модель возвращать ТОЛЬКО перевод
+- Без префикса «Вот перевод:»
+- Без объяснений или комментариев
 
-### 5. The Translation Query
+### 5. Запрос перевода
 ```javascript
 const q1 = `Translate this text into german: 
 
@@ -113,54 +113,54 @@ abling them to sustain coherent strategies in adversarial, stochastic environmen
 ...
 `;
 ```
-- Contains a scientific abstract about LLM agents (HexMachina paper)
-- Complex technical content with specialized terms
-- Tests the model's ability to:
-  - Understand technical AI/ML concepts
-  - Translate accurately
-  - Follow the detailed system prompt rules
+- Содержит научную аннотацию об агентах LLM (статья HexMachina)
+- Сложный технический контент со специализированными терминами
+- Тестирует способность модели:
+  - Понимать технические концепции AI/ML
+  - Точно переводить
+  - Следовать детальным правилам системного промпта
 
-### 6. Execute Translation
+### 6. Выполнение перевода
 ```javascript
 const a1 = await session.prompt(q1);
 console.log("AI: " + a1);
 ```
-- Sends the translation request to the model
-- The model will:
-  1. Read the system prompt (its "role")
-  2. Read the user's request
-  3. Apply all the rules from the system prompt
-  4. Generate a German translation
+- Отправляет запрос перевода модели
+- Модель:
+  1. Читает системный промпт (свою «роль»)
+  2. Читает запрос пользователя
+  3. Применяет все правила из системного промпта
+  4. Генерирует немецкий перевод
 
-### 7. Cleanup
+### 7. Очистка
 ```javascript
 session.dispose()
 context.dispose()
 model.dispose()
 llama.dispose()
 ```
-- Same cleanup as intro.js
-- Always dispose resources when done
+- Аналогичная очистка как в intro.js
+- Всегда освобождайте ресурсы после использования
 
-## Key Concepts Demonstrated
+## Продемонстрированные ключевые концепции
 
-### 1. System Prompts for Specialization
-System prompts transform a general-purpose LLM into a specialized agent:
+### 1. Системные промпты для специализации
+Системные промпты трансформируют универсальную LLM в специализированного агента:
 
 ```
 General LLM + System Prompt = Specialized Agent
                               (Translator, Coder, Analyst, etc.)
 ```
 
-### 2. Detailed Instructions Matter
-Compare these approaches:
+### 2. Детальность инструкций важна
+Сравните эти подходы:
 
-**❌ Minimal approach:**
+**❌ Минимальный подход:**
 ```javascript
 systemPrompt: "Translate to German"
 ```
 
-**✅ This example (detailed):**
+**✅ Этот пример (детальный):**
 ```javascript
 systemPrompt: `
   You are a professional translator
@@ -172,12 +172,12 @@ systemPrompt: `
 `
 ```
 
-The detailed approach gives much better, more consistent results.
+Детальный подход даёт гораздо лучшие, более согласованные результаты.
 
-### 3. Constraining Output Format
-The line "DO NOT add any addition text" demonstrates output control:
+### 3. Ограничение формата вывода
+Строка «DO NOT add any addition text» демонстрирует контроль вывода:
 
-**Without constraint:**
+**Без ограничений:**
 ```
 AI: Here's the translation of the text you provided:
 
@@ -186,46 +186,46 @@ AI: Here's the translation of the text you provided:
 I hope this helps! Let me know if you need anything else.
 ```
 
-**With constraint:**
+**С ограничениями:**
 ```
 AI: [German text only]
 ```
 
-## What Makes This an "Agent"?
+## Что делает это «агентом»?
 
-This is a **specialized agent** because:
+Это **специализированный агент**, потому что:
 
-1. **Specific Role**: Has a defined purpose (translation)
-2. **Constrained Behavior**: Follows specific rules and guidelines
-3. **Consistent Output**: Produces predictable, formatted results
-4. **Domain Expertise**: Optimized for scientific/technical content
+1. **Конкретная роль**: Имеет определённую цель (перевод)
+2. **Ограниченное поведение**: Следует конкретным правилам и руководствам
+3. **Согласованный вывод**: Генерирует предсказуемые, форматированные результаты
+4. **Экспертиза в области**: Оптимизирован для научного/технического контента
 
-## Expected Output
+## Ожидаемый вывод
 
-When run, you'll see a German translation of the English abstract, following all the rules:
-- Proper German scientific style
-- Correct technical terminology
-- German number formatting (e.g., "54 %")
-- No extra commentary
+При запуске Вы увидите немецкий перевод английской аннотации, следуя всем правилам:
+- Правильный немецкий научный стиль
+- Правильная техническая терминология
+- Немецкое форматирование чисел (например, «54 %»)
+- Без лишних комментариев
 
-The quality depends on the model's training and size.
+Качество зависит от обучения и размера модели.
 
-## Experimentation Ideas
+## Идеи для экспериментов
 
-1. **Try different models**:
-  - Swap Apertus-8B with a smaller model (3B) to see size impact
-  - Try a monolingual English model to demonstrate the importance of multilingual training
-  - Use models with different quantization levels (Q4, Q6, Q8) to compare quality vs. size
+1. **Попробуйте разные модели**:
+   - Замените Apertus-8B на модель поменьше (3B), чтобы увидеть влияние размера
+   - Попробуйте одноязычную английскую модель, чтобы продемонстрировать важность многоязычного обучения
+   - Используйте модели с разными уровнями квантизации (Q4, Q6, Q8) для сравнения качества и размера
 
-2. **Modify the system prompt**:
-  - Remove specific rules one by one to see their impact
-  - Change the translation target language
-  - Adjust the style (formal vs. casual)
+2. **Измените системный промпт**:
+   - Удаляйте правила по одному, чтобы увидеть их влияние
+   - Измените целевой язык перевода
+   - Настройте стиль (формальный vs неформальный)
 
-3. **Test with different content**:
-  - Technical documentation
-  - Creative writing
-  - Business communications
-  - Simple vs. complex sentences
+3. **Тестируйте с разным контентом**:
+   - Техническая документация
+   - Творческое письмо
+   - Деловая переписка
+   - Простые vs сложные предложения
 
-Each experiment will help you understand how system prompts, model selection, and prompt engineering work together to create effective AI agents.
+Каждый эксперимент поможет понять, как системные промпты, выбор модели и проектирование промптов работают вместе для создания эффективных AI-агентов.

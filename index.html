@@ -6,19 +6,171 @@
     <title>AI Agents from Scratch — Русский перевод</title>
     <style>
         body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:900px;margin:0 auto;padding:20px;background:#0f0f0f;color:#eaeaea;line-height:1.7}
-        a{color:#e94560}h1{color:#fff}.nav{margin-bottom:30px;padding:15px;background:#1a1a2e;border-radius:12px}
+        a{color:#e94560}a:hover{text-decoration:underline}
+        h1{color:#fff;margin-bottom:10px}
+        h2{color:#fff;margin-top:30px;border-bottom:1px solid #333;padding-bottom:8px}
+        .nav{margin-bottom:30px;padding:15px;background:#1a1a2e;border-radius:12px;display:flex;gap:20px;flex-wrap:wrap}
+        .lesson{margin:12px 0;padding:12px 16px;background:#1a1a2e;border-radius:8px;border-left:3px solid #e94560}
+        .lesson h3{margin:0 0 6px 0;color:#fff;font-size:1.1em}
+        .lesson .links{font-size:0.9em;color:#888}
+        .lesson .links a{margin-right:12px}
+        .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.75em;margin-left:8px}
+        .badge-done{background:#2d6a4f;color:#95d5b2}
+        .badge-todo{background:#6c3483;color:#d2b4de}
+        code{background:#1e1e2e;padding:2px 6px;border-radius:4px;font-size:0.9em}
+        .status{margin-top:30px;padding:15px;background:#1a1a2e;border-radius:12px}
+        .status h2{margin-top:0;border:none}
     </style>
 </head>
 <body>
     <div class="nav">
         <a href="../">← Все курсы</a>
         <a href="https://github.com/galaersh-ai">GitHub</a>
+        <a href="https://agentsfromscratch.com">Сайт курса (EN)</a>
     </div>
     <h1>🎯 AI Agents from Scratch</h1>
     <p><strong>Русский перевод</strong></p>
-    <p>Переводы уроков находятся в папке <code>translations/ru/</code></p>
-    <ul>
-        <li><a href="https://github.com/galaersh-ai/ai-agents-from-scratch/tree/main/translations/ru">Открыть папку с переводами →</a></li>
-    </ul>
+    <p>Изучите создание AI-агентов локально без фреймворков. Понимайте, что происходит «под капотом», прежде чем использовать производственные решения.</p>
+
+    <h2>📖 Переведённые материалы</h2>
+
+    <div class="lesson">
+        <h3>Общие документы</h3>
+        <div class="links">
+            <a href="README.ru.md">README</a>
+            <a href="CONTRIBUTING.ru.md">Контрибьюция</a>
+            <a href="DOWNLOAD.ru.md">Скачивание моделей</a>
+            <a href="PROMPTING.ru.md">Проектирование промптов</a>
+        </div>
+    </div>
+
+    <h2>📚 Уроки</h2>
+
+    <div class="lesson">
+        <h3>01. Введение — Основы работы с LLM</h3>
+        <div class="links">
+            <a href="translations/ru/01_intro/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/01_intro/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>02. Знакомство с OpenAI</h3>
+        <div class="links">
+            <a href="translations/ru/02_openai-intro/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/02_openai-intro/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>03. Перевод — Системные промпты</h3>
+        <div class="links">
+            <a href="translations/ru/03_translation/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/03_translation/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>04. Think — Рассуждения</h3>
+        <div class="links">
+            <a href="translations/ru/04_think/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/04_think/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>05. Batch — Параллельная обработка</h3>
+        <div class="links">
+            <a href="translations/ru/05_batch/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/05_batch/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>06. Coding — Стриминг</h3>
+        <div class="links">
+            <a href="translations/ru/06_coding/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/06_coding/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>07. Simple Agent — Инструменты</h3>
+        <div class="links">
+            <a href="translations/ru/07_simple-agent/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/07_simple-agent/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>08. Agent with Memory — Память</h3>
+        <div class="links">
+            <a href="translations/ru/08_simple-agent-with-memory/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/08_simple-agent-with-memory/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>09. ReAct Agent — Рассуждения + Действия</h3>
+        <div class="links">
+            <a href="translations/ru/09_react-agent/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/09_react-agent/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>10. AoT Agent — Атомы рассуждений</h3>
+        <div class="links">
+            <a href="translations/ru/10_aot-agent/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/10_aot-agent/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>11. Обработка ошибок</h3>
+        <div class="links">
+            <a href="translations/ru/11_error-handling/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/11_error-handling/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>12. Дерево рассуждений (ToT)</h3>
+        <div class="links">
+            <a href="translations/ru/12_tree-of-thought/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/12_tree-of-thought/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>13. Граф рассуждений (GoT)</h3>
+        <div class="links">
+            <a href="translations/ru/13_graph-of-thought/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/13_graph-of-thought/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>14. Цепочка рассуждений (CoT)</h3>
+        <div class="links">
+            <a href="translations/ru/14_chain-of-thought/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/14_chain-of-thought/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="lesson">
+        <h3>15. Маршрутизация инструментов</h3>
+        <div class="links">
+            <a href="translations/ru/15_tool-routing-embeddings/CONCEPT.md">Концепции</a>
+            <a href="translations/ru/15_tool-routing-embeddings/CODE.md">Разбор кода</a>
+        </div>
+    </div>
+
+    <div class="status">
+        <h2>📊 Статус перевода</h2>
+        <p>Корневые документы: <strong>4/4</strong> переведены</p>
+        <p>Уроки: <strong>0/30</strong> переведены (CONCEPT.md + CODE.md × 15 уроков)</p>
+        <p><em>Последнее обновление: 2026-07-23</em></p>
+    </div>
 </body>
 </html>

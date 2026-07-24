@@ -1,0 +1,323 @@
+{
+  "version": "1.0",
+  "source_root": "examples/",
+  "translation_root": "translations/ru/",
+  "root_docs": {
+    "README.md": {
+      "src": "README.md",
+      "hash": "e121189d878aec9a",
+      "status": "done",
+      "translated": "2026-07-24",
+      "translation_hash": "07f5f27695646240"
+    },
+    "CONTRIBUTING.md": {
+      "src": "CONTRIBUTING.md",
+      "hash": "84a4e47a01b337d8",
+      "status": "done",
+      "translated": "2026-07-24",
+      "translation_hash": "def5c272bbaca37d"
+    },
+    "DOWNLOAD.md": {
+      "src": "DOWNLOAD.md",
+      "hash": "91550d6306e000ef",
+      "status": "done",
+      "translated": "2026-07-24",
+      "translation_hash": "03b7db3ca9fed917"
+    },
+    "PROMPTING.md": {
+      "src": "PROMPTING.md",
+      "hash": "56fe8cd029391e42",
+      "status": "done",
+      "translated": "2026-07-24",
+      "translation_hash": "4f65b23f97616fd8"
+    }
+  },
+  "lessons": {
+    "01_intro": {
+      "CONCEPT.md": {
+        "src": "examples/01_intro/CONCEPT.md",
+        "hash": "2fc0470be3cdf931",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "49abc798916e5544"
+      },
+      "CODE.md": {
+        "src": "examples/01_intro/CODE.md",
+        "hash": "9e0c5604235534ef",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "6967fc673f6306ff"
+      },
+      "_js_files": [
+        "intro.js"
+      ]
+    },
+    "02_openai-intro": {
+      "CONCEPT.md": {
+        "src": "examples/02_openai-intro/CONCEPT.md",
+        "hash": "df2f28cfc53d965e",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "c8c2b38c0b3f915c"
+      },
+      "CODE.md": {
+        "src": "examples/02_openai-intro/CODE.md",
+        "hash": "fc7236f9930f688c",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "33c9904c377c48c1"
+      },
+      "_js_files": [
+        "openai-intro.js"
+      ]
+    },
+    "03_translation": {
+      "CONCEPT.md": {
+        "src": "examples/03_translation/CONCEPT.md",
+        "hash": "0e274d288ea8e86b",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "35ac41cb0d4a3e6b"
+      },
+      "CODE.md": {
+        "src": "examples/03_translation/CODE.md",
+        "hash": "8312ebf5923b94c1",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "66775cf52e2896b3"
+      },
+      "_js_files": [
+        "translation.js"
+      ]
+    },
+    "04_think": {
+      "CONCEPT.md": {
+        "src": "examples/04_think/CONCEPT.md",
+        "hash": "350fad1af7db4204",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "78436ab9fa1d1322"
+      },
+      "CODE.md": {
+        "src": "examples/04_think/CODE.md",
+        "hash": "5d3eda1445c86d99",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "d5b1f52a22dc1d08"
+      },
+      "_js_files": [
+        "think.js"
+      ]
+    },
+    "05_batch": {
+      "CONCEPT.md": {
+        "src": "examples/05_batch/CONCEPT.md",
+        "hash": "b98574223d9d4ecb",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "6b98b9d661b4cd1a"
+      },
+      "CODE.md": {
+        "src": "examples/05_batch/CODE.md",
+        "hash": "38097bdc3b272e08",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "7d23d92325b78ace"
+      },
+      "_js_files": [
+        "batch.js"
+      ]
+    },
+    "06_coding": {
+      "CONCEPT.md": {
+        "src": "examples/06_coding/CONCEPT.md",
+        "hash": "684dab609751d25c",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "0cbb1074438b0338"
+      },
+      "CODE.md": {
+        "src": "examples/06_coding/CODE.md",
+        "hash": "53c4cdbe62fa3929",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "9f75bc1449b8d1ec"
+      },
+      "_js_files": [
+        "coding.js"
+      ]
+    },
+    "07_simple-agent": {
+      "CONCEPT.md": {
+        "src": "examples/07_simple-agent/CONCEPT.md",
+        "hash": "03d5c362286c5c7c",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "25f88e826aef88c0"
+      },
+      "CODE.md": {
+        "src": "examples/07_simple-agent/CODE.md",
+        "hash": "c77541e973157e14",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "b35c755f4ef2c0bc"
+      },
+      "_js_files": [
+        "simple-agent.js"
+      ]
+    },
+    "08_simple-agent-with-memory": {
+      "CONCEPT.md": {
+        "src": "examples/08_simple-agent-with-memory/CONCEPT.md",
+        "hash": "daeb60bd49032afe",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "48f807da5a5b7c08"
+      },
+      "CODE.md": {
+        "src": "examples/08_simple-agent-with-memory/CODE.md",
+        "hash": "1bd9cf626f4f2846",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "21081d3a827542ee"
+      },
+      "_js_files": [
+        "memory-manager.js",
+        "simple-agent-with-memory.js"
+      ]
+    },
+    "09_react-agent": {
+      "CONCEPT.md": {
+        "src": "examples/09_react-agent/CONCEPT.md",
+        "hash": "16253143f6209023",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "355c504059707853"
+      },
+      "CODE.md": {
+        "src": "examples/09_react-agent/CODE.md",
+        "hash": "30bcf1c7643206c5",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "14e63125c0d7d553"
+      },
+      "_js_files": [
+        "react-agent.js"
+      ]
+    },
+    "10_aot-agent": {
+      "CONCEPT.md": {
+        "src": "examples/10_aot-agent/CONCEPT.md",
+        "hash": "bcda97c915f40bae",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "a9963147cc605cc9"
+      },
+      "CODE.md": {
+        "src": "examples/10_aot-agent/CODE.md",
+        "hash": "f951f50050cf773a",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "fc94ee0c31f5ddc4"
+      },
+      "_js_files": [
+        "aot-agent.js"
+      ]
+    },
+    "11_error-handling": {
+      "CONCEPT.md": {
+        "src": "examples/11_error-handling/CONCEPT.md",
+        "hash": "95442897f1c3e073",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "055aced90ab166d1"
+      },
+      "CODE.md": {
+        "src": "examples/11_error-handling/CODE.md",
+        "hash": "1f9e811dc44cb71a",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "1b753dd44bcedf7e"
+      },
+      "_js_files": [
+        "error-handling.js"
+      ]
+    },
+    "12_tree-of-thought": {
+      "CONCEPT.md": {
+        "src": "examples/12_tree-of-thought/CONCEPT.md",
+        "hash": "9aa147cfb0295d8a",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "6bdf34682e05e1cb"
+      },
+      "CODE.md": {
+        "src": "examples/12_tree-of-thought/CODE.md",
+        "hash": "e8695a65f219e911",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "d25434eea98ccd7e"
+      },
+      "_js_files": [
+        "tree-of-thought.js"
+      ]
+    },
+    "13_graph-of-thought": {
+      "CONCEPT.md": {
+        "src": "examples/13_graph-of-thought/CONCEPT.md",
+        "hash": "eb7264c08fef994e",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "808f97e1d245da60"
+      },
+      "CODE.md": {
+        "src": "examples/13_graph-of-thought/CODE.md",
+        "hash": "5f296af99613dd84",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "e9f666088b5bb9ea"
+      },
+      "_js_files": [
+        "graph-of-thought.js"
+      ]
+    },
+    "14_chain-of-thought": {
+      "CONCEPT.md": {
+        "src": "examples/14_chain-of-thought/CONCEPT.md",
+        "hash": "e0a84e5574caa280",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "cc2722f1105838c7"
+      },
+      "CODE.md": {
+        "src": "examples/14_chain-of-thought/CODE.md",
+        "hash": "f223898eea499e74",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "ed9f1f1d85d138ef"
+      },
+      "_js_files": [
+        "chain-of-thought.js"
+      ]
+    },
+    "15_tool-routing-embeddings": {
+      "CONCEPT.md": {
+        "src": "examples/15_tool-routing-embeddings/CONCEPT.md",
+        "hash": "fc3e7014b20021c9",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "96c8ed40a34b6afe"
+      },
+      "CODE.md": {
+        "src": "examples/15_tool-routing-embeddings/CODE.md",
+        "hash": "cf0f9c99afe8f99a",
+        "status": "done",
+        "translated": "2026-07-24",
+        "translation_hash": "8f8218c6dd88c62f"
+      },
+      "_js_files": [
+        "tool-routing-embeddings.js"
+      ]
+    }
+  }
+}

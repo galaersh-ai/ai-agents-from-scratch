@@ -1,10 +1,10 @@
-# Code Explanation: intro.js
+# Объяснение кода: intro.js
 
-This file demonstrates the most basic interaction with a local LLM (Large Language Model) using node-llama-cpp.
+Этот файл демонстрирует максимально простое взаимодействие с локальной LLM (большой языковой моделью) с использованием node-llama-cpp.
 
-## Step-by-Step Code Breakdown
+## Пошаговый разбор кода
 
-### 1. Import Required Modules
+### 1. Импорт необходимых модулей
 ```javascript
 import {
     getLlama,
@@ -13,27 +13,27 @@ import {
 import {fileURLToPath} from "url";
 import path from "path";
 ```
-- **getLlama**: Main function to initialize the llama.cpp runtime
-- **LlamaChatSession**: Class for managing chat conversations with the model
-- **fileURLToPath** and **path**: Standard Node.js modules for handling file paths
+- **getLlama**: Главная функция для инициализации runtime llama.cpp
+- **LlamaChatSession**: Класс для управления чат-сессиями с моделью
+- **fileURLToPath** и **path**: Стандартные модули Node.js для работы с путями файлов
 
-### 2. Set Up Directory Path
+### 2. Настройка пути к директории
 ```javascript
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 ```
-- Since ES modules don't have `__dirname` by default, we create it manually
-- This gives us the directory path of the current file
-- Needed to locate the model file relative to this script
+- Поскольку ES-модули не имеют `__dirname` по умолчанию, мы создаём его вручную
+- Это даёт нам путь к директории текущего файла
+- Необходимо для locating файла модели относительно этого скрипта
 
-### 3. Initialize Llama Runtime
+### 3. Инициализация runtime Llama
 ```javascript
 const llama = await getLlama();
 ```
-- Creates the main llama.cpp instance
-- This initializes the underlying C++ runtime for model inference
-- Must be done before loading any models
+- Создаёт основной экземпляр llama.cpp
+- Это инициализирует базовый C++ runtime для инференса модели
+- Должно быть выполнено до загрузки любых моделей
 
-### 4. Load the Model
+### 4. Загрузка модели
 ```javascript
 const model = await llama.loadModel({
     modelPath: path.join(
@@ -44,69 +44,69 @@ const model = await llama.loadModel({
     )
 });
 ```
-- Loads a quantized model file (GGUF format)
-- **Qwen3-1.7B-Q8_0.gguf**: A 1.7 billion parameter model, quantized to 8-bit
-- The model is stored in the `models` folder at the repository root
-- Loading the model into memory takes a few seconds
+- Загружает квантизированный файл модели (формат GGUF)
+- **Qwen3-1.7B-Q8_0.gguf**: Модель с 1.7 миллиардами параметров, квантизированная до 8 бит
+- Модель хранится в папке `models` в корне репозитория
+- Загрузка модели в память занимает несколько секунд
 
-### 5. Create a Context
+### 5. Создание контекста
 ```javascript
 const context = await model.createContext();
 ```
-- A **context** represents the model's working memory
-- It holds the conversation history and current state
-- Has a fixed size limit (default: model's maximum context size)
-- All prompts and responses are stored in this context
+- **Контекст** представляет рабочую память модели
+- Он хранит историю разговора и текущее состояние
+- Имеет фиксированный лимит размера (по умолчанию: максимальный размер контекста модели)
+- Все промпты и ответы хранятся в этом контексте
 
-### 6. Create a Chat Session
+### 6. Создание чат-сессии
 ```javascript
 const session = new LlamaChatSession({
     contextSequence: context.getSequence(),
 });
 ```
-- **LlamaChatSession**: High-level API for chat-style interactions
-- Uses a sequence from the context to maintain conversation state
-- Automatically handles prompt formatting and response parsing
+- **LlamaChatSession**: API высокого уровня для взаимодействия в стиле чата
+- Использует последовательность из контекста для поддержания состояния разговора
+- Автоматически обрабатывает форматирование промптов и парсинг ответов
 
-### 7. Define the Prompt
+### 7. Определение промпта
 ```javascript
 const prompt = `do you know node-llama-cpp`;
 ```
-- Simple question to test if the model knows about the library we're using
-- This will be sent to the model for processing
+- Простой вопрос для проверки, знает ли модель о библиотеке, которую мы используем
+- Он будет отправлен модели для обработки
 
-### 8. Send Prompt and Get Response
+### 8. Отправка промпта и получение ответа
 ```javascript
 const a1 = await session.prompt(prompt);
 console.log("AI: " + a1);
 ```
-- **session.prompt()**: Sends the prompt to the model and waits for completion
-- The model generates a response based on its training
-- We log the response to the console with "AI:" prefix
+- **session.prompt()**: Отправляет промпт модели и ждёт завершения
+- Модель генерирует ответ на основе своего обучения
+- Мы логируем ответ в консоль с префиксом «AI:»
 
-### 9. Clean Up Resources
+### 9. Очистка ресурсов
 ```javascript
 session.dispose()
 context.dispose()
 model.dispose()
 llama.dispose()
 ```
-- **Important**: Always dispose of resources when done
-- Frees up memory and GPU resources
-- Prevents memory leaks in long-running applications
-- Must be done in this order (session → context → model → llama)
+- **Важно**: Всегда освобождайте ресурсы после использования
+- Освобождает память и ресурсы GPU
+- Предотвращает утечки памяти в долго работающих приложениях
+- Должно быть выполнено в этом порядке (session → context → model → llama)
 
-## Key Concepts Demonstrated
+## Продемонстрированные ключевые концепции
 
-1. **Basic LLM initialization**: Loading a model and creating inference context
-2. **Simple prompting**: Sending a question and receiving a response
-3. **Resource management**: Proper cleanup of allocated resources
+1. **Базовая инициализация LLM**: Загрузка модели и создание контекста инференса
+2. **Простой промптинг**: Отправка вопроса и получение ответа
+3. **Управление ресурсами**: Правильная очистка выделенных ресурсов
 
-## Expected Output
+## Ожидаемый вывод
 
-When you run this script, you should see output like:
+При запуске этого скрипта Вы должны увидеть вывод типа:
 ```
 AI: Yes, I'm familiar with node-llama-cpp. It's a Node.js binding for llama.cpp...
 ```
 
-The exact response will vary based on the model's training data and generation parameters.
+Точный ответ будет варьироваться в зависимости от данных обучения модели и параметров генерации.

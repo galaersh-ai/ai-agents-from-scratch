@@ -1,22 +1,22 @@
-# Code explanation: `tool-routing-embeddings.js`
+# Объяснение кода: `tool-routing-embeddings.js`
 
-This example loads **two** GGUF models with one `getLlama()` instance: a **chat** model (Qwen3) and a **dedicated embedding** model (bge-small-en). Only the embedding model uses `createEmbeddingContext()`.
+Этот пример загружает **две** GGUF-модели через один экземпляр `getLlama()`: **chat-модель** (Qwen3) и **специализированную модель эмбеддингов** (bge-small-en). Только модель эмбеддингов использует `createEmbeddingContext()`.
 
-## Run
+## Запуск
 
 ```bash
 node examples/15_tool-routing-embeddings/tool-routing-embeddings.js
 ```
 
-Requires both files under `models/` (see [DOWNLOAD.md](../../DOWNLOAD.md)): `Qwen3-1.7B-Q8_0.gguf` and `bge-small-en-v1.5-q8_0.gguf`.
+Требуются оба файла в `models/` (см. [DOWNLOAD.md](../../DOWNLOAD.md)): `Qwen3-1.7B-Q8_0.gguf` и `bge-small-en-v1.5-q8_0.gguf`.
 
 ---
 
-## 1) Two routing functions: `scoreTools` and `selectToolKeys`
+## 1) Две функции маршрутизации: `scoreTools` и `selectToolKeys`
 
-The routing logic is deliberately split into two small, inspectable functions. You can unit-test them independently and swap either one without touching the other.
+Логика маршрутизации намеренно разделена на две маленькие, инспектируемые функции. Вы можете тестировать их независимо и заменять любую, не затрагивая другую.
 
-**`scoreTools`** - query vs. all exemplars, return a score per tool:
+**`scoreTools`** — запрос vs. все примеры, возвращает оценку для каждого инструмента:
 
 ```javascript
 function scoreTools(queryEmbedding, exemplarRows) {
@@ -30,9 +30,9 @@ function scoreTools(queryEmbedding, exemplarRows) {
 }
 ```
 
-Each tool can have several exemplar strings. The score used is the **maximum** across all of them, not the mean. A single strong exemplar match keeps a tool competitive even if the other phrasings miss - this is the same "max-sim" strategy used in late-interaction retrieval models.
+Каждый инструмент может иметь несколько строк-примеров. Используемая оценка — это **максимум** среди всех них, а не среднее. Одно сильное совпадение примера сохраняет инструмент конкурентоспособным, даже если другие формулировки промахиваются — это та же стратегия «max-sim», которая используется в моделях извлечения с поздним взаимодействием.
 
-**`selectToolKeys`** - pick the top-k tools plus any pinned tools:
+**`selectToolKeys`** — выбор top-k инструментов плюс закреплённые:
 
 ```javascript
 function selectToolKeys(scores, k, alwaysInclude) {
@@ -50,13 +50,13 @@ function selectToolKeys(scores, k, alwaysInclude) {
 }
 ```
 
-Pinned tools are added first and do **not** consume a retrieval slot. Requesting `k=1` with one pinned tool yields two tools total, not one.
+Закреплённые инструменты добавляются первыми и **не** потребляют слот извлечения. Запрос `k=1` с одним закреплённым инструментом даёт два инструмента суммарно, а не один.
 
 ---
 
-## 2) Tool catalog (12 IT helpdesk tools)
+## 2) Каталог инструментов (12 инструментов IT-помощника)
 
-Every tool is a `defineChatSessionFunction` entry with a description, a JSON schema, and a handler. The handlers return canned JSON so the lesson stays focused on routing, not business logic.
+Каждый инструмент — это запись `defineChatSessionFunction` с описанием, JSON-схемой и обработчиком. Обработчики возвращают зафиксированный JSON, чтобы урок оставался сфокусированным на маршрутизации, а не на бизнес-логике.
 
 ```javascript
 const checkVPNStatus = defineChatSessionFunction({
@@ -80,21 +80,21 @@ const checkVPNStatus = defineChatSessionFunction({
 });
 ```
 
-The twelve tools cover five distinct semantic clusters. Distinct clusters matter: routing works because embedding similarity separates them.
+Двенадцать инструментов покрывают пять различных семантических кластеров. Различные кластеры важны: маршрутизация работает, потому что сходство эмбеддингов разделяет их.
 
-| Cluster | Tools |
-|---|---|
-| Connectivity | `checkNetworkConnectivity`, `checkVPNStatus` |
-| System health | `getSystemLogs`, `runDiagnostic`, `getHardwareInfo` |
-| Storage / software | `checkDiskSpace`, `getInstalledSoftware` |
-| Account / access | `getUserAccount`, `resetPassword` |
-| Operations | `restartService`, `createSupportTicket`, `escalateToSpecialist` |
+| Кластер | Инструменты |
+|---------|-------------|
+| Связность | `checkNetworkConnectivity`, `checkVPNStatus` |
+| Здоровье системы | `getSystemLogs`, `runDiagnostic`, `getHardwareInfo` |
+| Хранилище / софт | `checkDiskSpace`, `getInstalledSoftware` |
+| Аккаунт / доступ | `getUserAccount`, `resetPassword` |
+| Операции | `restartService`, `createSupportTicket`, `escalateToSpecialist` |
 
 ---
 
-## 3) `EXEMPLARS` and cold-start embedding
+## 3) `EXEMPLARS` и холодный старт эмбеддингов
 
-`EXEMPLARS` is a flat list of `{ toolKey, text }` pairs - three phrasings per tool (36 total):
+`EXEMPLARS` — плоский список пар `{ toolKey, text }` — три формулировки на инструмент (36 суммарно):
 
 ```javascript
 const EXEMPLARS = [
@@ -111,9 +111,9 @@ const EXEMPLARS = [
 ];
 ```
 
-The strings are **not** copied from the demo prompts - they are paraphrases. If exemplars were near-identical to live queries, routing would look "magic" but you would be testing verbatim recall, not semantic generalization.
+Строки **не** скопированы из демо-промптов — это парафразы. Если бы примеры были идентичны живым запросам, маршрутизация выглядела бы «магической», но Вы тестировали бы дословный recall, а не семантическое обобщение.
 
-At startup, every exemplar is embedded once and cached:
+При запуске каждый пример эмбеддинируется один раз и кэшируется:
 
 ```javascript
 const exemplarRows = [];
@@ -123,13 +123,13 @@ for (const { toolKey, text } of EXEMPLARS) {
 }
 ```
 
-In a production service you would persist these vectors and rebuild them only when the tool catalog changes.
+В production-сервисе Вы бы персистили эти векторы и пересобирали их только при изменении каталога инструментов.
 
 ---
 
-## 4) Model setup: one `llama` instance, two models
+## 4) Настройка модели: один экземпляр `llama`, две модели
 
-Both models are loaded through the same `llama` handle but each gets its own context type:
+Обе модели загружаются через один хэндл `llama`, но каждая получает свой тип контекста:
 
 ```javascript
 const llama = await getLlama({ debug });
@@ -148,13 +148,13 @@ const embedModel = await llama.loadModel({ modelPath: EMBED_MODEL_PATH });
 const embedContext = await embedModel.createEmbeddingContext();
 ```
 
-`QwenChatWrapper({ thoughts: "discourage" })` prevents the Qwen3 model from writing the post-tool answer inside internal "thought" segments, which would make `session.prompt()` return an empty string.
+`QwenChatWrapper({ thoughts: "discourage" })` предотвращает запись модели Qwen3 пост-инструментального ответа внутри внутренних сегментов «мышления», что привело бы к тому, что `session.prompt()` возвращал бы пустую строку.
 
 ---
 
-## 5) `runWithRouting` - routing + prompt + logging
+## 5) `runWithRouting` — маршрутизация + промпт + логирование
 
-Each demo case calls this function. It runs the full pipeline and appends a record to `routingLog` for the visualization:
+Каждый демо-случай вызывает эту функцию. Она запускает полный конвейер и добавляет запись в `routingLog` для визуализации:
 
 ```javascript
 async function runWithRouting(userPrompt, { retrievalK, alwaysInclude = new Set(), label }) {
@@ -187,13 +187,13 @@ async function runWithRouting(userPrompt, { retrievalK, alwaysInclude = new Set(
 }
 ```
 
-The similarity table is the key teaching output. The `✓` mark shows exactly which tools the LLM can see. Every other tool is invisible to it for that turn.
+Таблица сходства — ключевой учебный вывод. Знак `✓` показывает точно, какие инструменты видит LLM. Все остальные инструменты невидимы для неё на этом ходу.
 
 ---
 
-## 6) Demo cases (read the console)
+## 6) Демо-случаи (читайте консоль)
 
-Cases are called in order. The first four establish baselines; cases 5 and 6 are the **same prompt** with different routing parameters to demonstrate recall failure and how pinning fixes it:
+Случаи вызываются по порядку. Первые четыре устанавливают базовые показатели; случаи 5 и 6 — **один и тот же промпт** с различными параметрами маршрутизации для демонстрации сбоя recall и того, как закрепление это исправляет:
 
 ```javascript
 // Cases 1-2: single intent, k=1 - one tool cluster dominates
@@ -218,20 +218,20 @@ await runWithRouting(DEMO_VPN_AND_LOCKED_K1, {
 });
 ```
 
-| # | Intent | k | Pinned | Expected tools exposed |
-|---|---|---|---|---|
-| 1 | VPN failure | 1 | - | `checkVPNStatus` |
-| 2 | Locked account | 1 | - | `getUserAccount` or `resetPassword` |
-| 3 | Crashing PC | 2 | - | `getSystemLogs` + `runDiagnostic` |
-| 4 | Disk full + software | 2 | - | `checkDiskSpace` + `getInstalledSoftware` |
-| 5 | VPN + locked account | 1 | - | VPN only - **account tool missing** |
-| 6 | VPN + locked account | 1 | `getUserAccount` | Both covered |
+| # | Намерение | k | Закреплённые | Ожидаемые видимые инструменты |
+|---|-----------|---|--------------|-------------------------------|
+| 1 | VPN-сбой | 1 | - | `checkVPNStatus` |
+| 2 | Заблокированный аккаунт | 1 | - | `getUserAccount` или `resetPassword` |
+| 3 | Падение ПК | 2 | - | `getSystemLogs` + `runDiagnostic` |
+| 4 | Диск полон + софт | 2 | - | `checkDiskSpace` + `getInstalledSoftware` |
+| 5 | VPN + заблокированный аккаунт | 1 | - | Только VPN — **инструмент аккаунта отсутствует** |
+| 6 | VPN + заблокированный аккаунт | 1 | `getUserAccount` | Оба покрыты |
 
 ---
 
-## 7) Disposal
+## 7) Очистка
 
-Resources are disposed in reverse dependency order:
+Ресурсы освобождаются в обратном порядке зависимостей:
 
 ```javascript
 session.dispose();

@@ -1,10 +1,10 @@
-# Concept: Function Calling & Tool Use
+# Концепция: Вызов функций и использование инструментов
 
-## Overview
+## Обзор
 
-Function calling transforms LLMs from text generators into agents that can take actions and interact with the world.
+Вызов функций превращает LLM из генераторов текста в агентов, способных выполнять действия и взаимодействовать с миром.
 
-## What Makes an Agent?
+## Что делает агента?
 
 ```
 Text Generator              Agent
@@ -12,9 +12,9 @@ Text Generator              Agent
 LLM → Text only            LLM + Tools → Can act
 ```
 
-**Function calling** lets the LLM invoke predefined functions to access data or perform actions it cannot do alone.
+**Вызов функций** позволяет LLM вызывать предопределённые функции для доступа к данным или выполнения действий, которые она не может сделать сама.
 
-## The Core Idea
+## Ключевая идея
 
 ```
 User: "What time is it?"
@@ -28,11 +28,11 @@ Tool returns: "1:46:36 PM"
 LLM responds: "It's 13:46"
 ```
 
-This is agency - the ability to DO, not just SAY.
+Это агентность — способность ДЕЛАТЬ, а не просто ГОВОРИТЬ.
 
-## How It Works
+## Как это работает
 
-### 1. Function Definition
+### 1. Определение функции
 ```javascript
 getCurrentTime = {
   description: "Get the current time",
@@ -40,7 +40,8 @@ getCurrentTime = {
 }
 ```
 
-### 2. LLM Sees Available Tools
+### 2. LLM видит доступные инструменты
+
 ```
 Available functions:
 - getCurrentTime: "Get the current time"
@@ -48,24 +49,25 @@ Available functions:
 - calculate: "Perform math"
 ```
 
-### 3. LLM Decides When to Use
+### 3. LLM решает, когда использовать
+
 ```
 "What time?" → getCurrentTime() ✓
 "What's 5+5?" → calculate() ✓
 "Tell a joke" → No tool needed
 ```
 
-## Real-World Applications
+## Практические применения
 
-**Personal Assistant**: Calendar, email, reminders
-**Research Agent**: Web search, document reading
-**Coding Assistant**: File operations, code execution
-**Data Analyst**: Database queries, calculations
+**Персональный ассистент**: Календарь, почта, напоминания
+**Исследовательский агент**: Веб-поиск, чтение документов
+**Кодирующий ассистент**: Операции с файлами, выполнение кода
+**Аналитик данных**: Запросы к базам данных, вычисления
 
-When you have many tools, sending the full catalog on every turn can waste context and increase wrong-tool calls; see [Example 15: tool routing with embeddings](../15_tool-routing-embeddings/CONCEPT.md) for a small embedding + exemplar pre-filter before the chat model runs.
+Когда у Вас много инструментов, отправка полного каталога на каждом ходу может тратить контекст и увеличивать количество неправильных вызовов инструментов; см. [Пример 15: маршрутизация инструментов с эмбеддингами](../15_tool-routing-embeddings/CONCEPT.md) для предварительной фильтрации с помощью маленькой модели эмбеддингов перед запуском chat-модели.
 
-## Key Takeaway
+## Ключевой вывод
 
-Function calling is THE feature that enables AI agents. Without it, LLMs can only talk. With it, they can act.
+Вызов функций — это ТА фича, которая обеспечивает AI-агентов. Без неё LLM могут только разговаривать. С ней — они могут действовать.
 
-This is the foundation of all modern agent systems.
+Это фундамент всех современных систем агентов.

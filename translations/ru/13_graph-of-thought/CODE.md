@@ -1,8 +1,8 @@
-# Code explanation: `graph-of-thought.js`
+# Объяснение кода: `graph-of-thought.js`
 
-This is a code-first walkthrough of the GoT implementation used in Example 13.
+Это кодо-ориентированное руководство по реализации GoT, используемой в примере 13.
 
-## Run
+## Запуск
 
 ```bash
 node examples/13_graph-of-thought/graph-of-thought.js
@@ -10,123 +10,123 @@ node examples/13_graph-of-thought/graph-of-thought.js
 
 ---
 
-## 1) Core graph object: `ThoughtGraph`
+## 1) Ключевой объект графа: `ThoughtGraph`
 
-`ThoughtGraph` is the central data structure.
+`ThoughtGraph` — центральная структура данных.
 
-### Stored state
+### Хранимое состояние
 
 - `nodes: Map<string, node>`
 - `edges: Map<string, parentId[]>`
-- `nextId` for sequential node ids (`n1`, `n2`, ...)
+- `nextId` для последовательных ID узлов (`n1`, `n2`, ...)
 
-### Key methods
+### Ключевые методы
 
 - `addNode(type, content, meta, parentIds)`
 - `get(id)`
 - `parents(id)`
 - `byType(type)`
-- `printGraph()` (debug trace of all nodes + edges)
+- `printGraph()` (отладочная трассировка всех узлов + рёбер)
 
-This is what makes the example truly graph-based instead of tree-based.
-
----
-
-## 2) Shared JSON call utility: `promptJson()`
-
-`promptJson(schema, userText)` is reused by every operation:
-
-- resets chat history,
-- enforces schema grammar,
-- parses JSON safely.
-
-All operation functions are then clean and focused on graph logic.
+Именно это делает пример по-настоящему графовым, а не древовидным.
 
 ---
 
-## 3) Phase functions (and the node type each creates)
+## 2) Общая утилита вызова JSON: `promptJson()`
 
-### `branch(...)` -> `hypothesis` nodes
+`promptJson(schema, userText)` повторно используется каждой операцией:
 
-- input: root behavior + hypothesis lenses
-- output: one node per lens
-- parent: always root
+- сбрасывает историю чата,
+- обеспечивает грамматику схемы,
+- безопасно парсит JSON.
 
-### `scoreAll(...)` -> updates `score` on hypothesis nodes
-
-- raw criterion scoring per hypothesis
-- strict reranking pass (no ties) with calibrated spread
-- writes score back into graph nodes
-
-### `contrast(...)` -> `contrast` node
-
-- input: two hypothesis nodes
-- output: contradiction node
-- parents: both compared nodes
-
-### `refine(...)` -> `refined` node
-
-- input: weak node + strong node/context
-- output: improved version of weak argument
-- parents: both source nodes
-
-### `aggregate(...)` -> `synthesis` node
-
-- input: multiple source nodes
-- output: integrated synthesis
-- parents: all source nodes
-
-### `conclude(...)` -> `conclusion` node
-
-- input: selected high-value strands
-- output: final integrated analysis
-- parents: multiple synthesis/contrast/refined nodes
+Все функции операций затем остаются чистыми и сфокусированными на логике графа.
 
 ---
 
-## 4) Controller flow: `runGoTMotivationAnalysis()`
+## 3) Функции фаз (и какой тип узла каждая создаёт)
 
-This function orchestrates everything:
+### `branch(...)` -> узлы `hypothesis`
 
-1. create `root`
-2. branch into 4 hypotheses
-3. score + rerank hypotheses
-4. build contrast nodes
-5. refine weak/medium nodes
-6. create two synthesis nodes
-7. conclude from multiple strands
-8. print graph + final narrative + generate visualization
+- вход: корневое поведение + призмы гипотез
+- выход: один узел на each призму
+- родитель: всегда корень
 
-The ranking step affects which nodes are considered `strongA`, `strongB`, `medium`, `weak`, which then influences contrast/refine selection.
+### `scoreAll(...)` -> обновляет `score` на узлах гипотез
+
+- сырая оценка по критериям для каждой гипотезы
+- строгий проход переранжирования (без ничьих) с калиброванным разбросом
+- записывает оценку обратно в узлы графа
+
+### `contrast(...)` -> узел `contrast`
+
+- вход: два узла гипотез
+- выход: узел противоречия
+- родители: оба сравниваемых узла
+
+### `refine(...)` -> узел `refined`
+
+- вход: слабый узел + сильный узел/контекст
+- выход: улучшенная версия слабого аргумента
+- родители: оба исходных узла
+
+### `aggregate(...)` -> узел `synthesis`
+
+- вход: несколько исходных узлов
+- выход: интегрированный синтез
+- родители: все исходные узлы
+
+### `conclude(...)` -> узел `conclusion`
+
+- вход: выбранные ценные нити
+- выход: финальный интегрированный анализ
+- родители: несколько узлов synthesis/contrast/refined
 
 ---
 
-## 5) Why this is GoT in code (not just in concept)
+## 4) Поток контроллера: `runGoTMotivationAnalysis()`
 
-Look at parent arrays in `addNode(...)` calls:
+Эта функция оркестрирует всё:
 
-- `contrast`: two parents
-- `refine`: two parents
-- `aggregate`: many parents
-- `conclusion`: many parents
+1. создание `root`
+2. ветвление на 4 гипотезы
+3. оценка + переранжирование гипотез
+4. построение узлов контраста
+5. уточнение слабых/средних узлов
+6. создание двух узлов синтеза
+7. заключение из нескольких нитей
+8. вывод графа + финального нарратива + генерация визуализации
 
-Multiple-parent nodes are impossible in strict tree search; they are the concrete code signature of GoT.
+Шаг ранжирования влияет на то, какие узлы считаются `strongA`, `strongB`, `medium`, `weak`, что затем влияет на выбор контраста/уточнения.
 
 ---
 
-## 6) Visualization integration
+## 5) Почему это GoT в коде (а не только в концепции)
 
-Visualization logic is intentionally extracted to helper code:
+Посмотрите на массивы родителей в вызовах `addNode(...)`:
+
+- `contrast`: два родителя
+- `refine`: два родителя
+- `aggregate`: много родителей
+- `conclusion`: много родителей
+
+Узлы с несколькими родителями невозможны в строгом древовидном поиске; они являются конкретной кодовой сигнатурой GoT.
+
+---
+
+## 6) Интеграция визуализации
+
+Логика визуализации намеренно вынесена в вспомогательный код:
 
 - `writeGoTMotivationVisualization(...)`
 
-So this example file stays focused on graph operations and orchestration.
+Чтобы файл примера оставался сфокусированным на графовых операциях и оркестрации.
 
 ---
 
-## Suggested code-reading order
+## Рекомендуемый порядок чтения кода
 
-1. `ThoughtGraph` class
+1. Класс `ThoughtGraph`
 2. `promptJson`
 3. `branch`
 4. `scoreAll`
@@ -136,4 +136,4 @@ So this example file stays focused on graph operations and orchestration.
 8. `conclude`
 9. `runGoTMotivationAnalysis`
 
-This gives you the same order as runtime execution and the cleanest learning path.
+Это тот же порядок, что и при выполнении, и самый чистый путь обучения.

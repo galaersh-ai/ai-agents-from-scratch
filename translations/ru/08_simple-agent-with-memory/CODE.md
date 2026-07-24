@@ -1,25 +1,25 @@
-# Code Explanation: simple-agent-with-memory.js
+# Объяснение кода: simple-agent-with-memory.js
 
-This example extends the simple agent with **persistent memory**, enabling it to remember information across sessions while intelligently avoiding duplicate saves.
+Этот пример расширяет простого агента **постоянной памятью**, позволяя ему запоминать информацию между сессиями при intelligentном избегании дублирующих сохранений.
 
-## Key Components
+## Ключевые компоненты
 
-### 1. MemoryManager Import
+### 1. Импорт MemoryManager
 ```javascript
 import {MemoryManager} from "./memory-manager.js";
 ```
-Custom class for persisting agent memories to JSON files with unified memory storage.
+Пользовательский класс для персистентности воспоминаний агента в JSON-файлах с единым хранилищем памяти.
 
-### 2. Initialize Memory Manager
+### 2. Инициализация менеджера памяти
 ```javascript
 const memoryManager = new MemoryManager('./agent-memory.json');
 const memorySummary = await memoryManager.getMemorySummary();
 ```
-- Loads existing memories from file
-- Generates formatted summary for system prompt
-- Handles migration from old memory schemas
+- Загружает существующие воспоминания из файла
+- Генерирует форматированную сводку для системного промпта
+- Обрабатывает миграцию со старых схем памяти
 
-### 3. Memory-Aware System Prompt with Reasoning
+### 3. Системный промпт с осведомлённостью о памяти и рассуждениями
 ```javascript
 const systemPrompt = `
 You are a helpful assistant with long-term memory.
@@ -47,13 +47,13 @@ ${memorySummary}
 `;
 ```
 
-**What this does:**
-- Includes existing memories in the prompt
-- Provides explicit reasoning guidelines to prevent duplicate saves
-- Teaches the agent to compare before saving
-- Instructs when to update vs. acknowledge existing data
+**Что это делает:**
+- Включает существующие воспоминания в промпт
+- Предоставляет явные руководства по рассуждениям для предотвращения дублирующих сохранений
+- Учит агента сравнивать перед сохранением
+- Инструктирует, когда обновлять vs. подтверждать существующие данные
 
-### 4. saveMemory Function
+### 4. Функция saveMemory
 ```javascript
 const saveMemory = defineChatSessionFunction({
     description: "Save important information to long-term memory (user preferences, facts, personal details)",
@@ -76,19 +76,19 @@ const saveMemory = defineChatSessionFunction({
 });
 ```
 
-**What it does:**
-- Uses structured key-value format for all memories
-- Saves both facts and preferences with the same method
-- Automatically handles duplicates (updates if value changes)
-- Persists to JSON file
-- Returns confirmation message
+**Что делает:**
+- Использует структурированный формат ключ-значение для всех воспоминаний
+- Сохраняет факты и предпочтения одним методом
+- Автоматически обрабатывает дубликаты (обновляет при изменении значения)
+- Персистит в JSON-файл
+- Возвращает сообщение подтверждения
 
-**Parameter Structure:**
-- `type`: Either "fact" or "preference"
-- `key`: Short identifier (e.g., "user_name", "favorite_food")
-- `value`: The actual information (e.g., "Alex", "pizza")
+**Структура параметров:**
+- `type`: Либо «fact», либо «preference»
+- `key`: Короткий идентификатор (например, «user_name», «favorite_food»)
+- `value`: Фактическая информация (например, «Alex», «pizza»)
 
-### 5. Example Conversation
+### 5. Пример разговора
 ```javascript
 const prompt1 = "Hi! My name is Alex and I love pizza.";
 const response1 = await session.prompt(prompt1, {functions});
@@ -101,9 +101,10 @@ const response2 = await session.prompt(prompt2, {functions});
 // Agent recalls from memory: "Pizza"
 ```
 
-## How Memory Works
+## Как работает память
 
-### Flow Diagram
+### Схема потока
+
 ```
 Session 1:
 User: "My name is Alex and I love pizza"
@@ -127,9 +128,9 @@ Agent compares: user_name already = "Alex"
 No function call! Just acknowledges: "Yes, I remember your name is Alex."
 ```
 
-## The MemoryManager Class
+## Класс MemoryManager
 
-Located in `memory-manager.js`:
+Расположен в `memory-manager.js`:
 ```javascript
 class MemoryManager {
   async loadMemories()           // Load from JSON (handles schema migration)
@@ -141,15 +142,15 @@ class MemoryManager {
 }
 ```
 
-**Benefits:**
-- Single unified method for all memory types
-- Automatic duplicate detection and prevention
-- Automatic value updates when information changes
+**Преимущества:**
+- Единый метод для всех типов памяти
+- Автоматическое обнаружение и предотвращение дубликатов
+- Автоматическое обновление значений при изменении информации
 
-## Key Concepts
+## Ключевые концепции
 
-### 1. Structured Memory Format
-All memories now use a consistent structure:
+### 1. Структурированный формат памяти
+Все воспоминания теперь используют согласованную структуру:
 ```javascript
 {
   type: "fact" | "preference",
@@ -160,20 +161,20 @@ All memories now use a consistent structure:
 }
 ```
 
-### 2. Intelligent Duplicate Prevention
-The agent is trained to:
-- **Compare** before saving
-- **Skip** if data is identical
-- **Update** if value changed
-- **Acknowledge** existing memories instead of re-saving
+### 2. Intelligentное предотвращение дубликатов
+Агент обучен:
+- **Сравнивать** перед сохранением
+- **Пропускать** если данные идентичны
+- **Обновлять** если значение изменилось
+- **Подтверждать** существующие воспоминания вместо повторного сохранения
 
-### 3. Persistent State
-- Memories survive script restarts
-- Stored in JSON file with metadata
-- Loaded at startup and injected into prompt
+### 3. Персистентное состояние
+- Воспоминания переживают перезапуск скриптов
+- Хранятся в JSON-файле с метаданными
+- Загружаются при запуске и инжектируются в промпт
 
-### 4. Memory Integration in System Prompt
-Memories are automatically formatted and injected:
+### 4. Интеграция памяти в системный промпт
+Воспоминания автоматически форматируются и инжектируются:
 ```
 === LONG-TERM MEMORY ===
 
@@ -186,54 +187,54 @@ User Preferences:
 - preferred_language: French
 ```
 
-## Why This Matters
+## Почему это важно
 
-**Without memory:** Agent starts fresh every time, asks same questions repeatedly
+**Без памяти:** Агент начинает с нуля каждый раз, задаёт одни и те же вопросы
 
-**With basic memory:** Agent remembers, but may save duplicates wastefully
+**С базовой памятью:** Агент запоминает, но может тратить ресурсы на дубликаты
 
-**With smart memory:** Agent remembers AND avoids redundant saves by reasoning first
+**С умной памятью:** Агент запоминает И избегает избыточных сохранений через рассуждения
 
-This enables:
-- **Personalized responses** based on user history
-- **Efficient memory usage** (no duplicate entries)
-- **Natural conversations** that feel continuous
-- **Stateful agents** that maintain context
-- **Automatic updates** when information changes
+Это обеспечивает:
+- **Персонализированные ответы** на основе истории пользователя
+- **Эффективное использование памяти** (без дублирующих записей)
+- **Естественные разговоры**, которые кажутся непрерывными
+- **Состоятельные агенты**, поддерживающие контекст
+- **Автоматические обновления** при изменении информации
 
-## Expected Output
+## Ожидаемый вывод
 
-**First run:**
+**Первый запуск:**
 ```
 User: "Hi! My name is Alex and I love pizza."
 AI: "Nice to meet you, Alex! I've noted that you love pizza."
 [Calls saveMemory twice - new information saved]
 ```
 
-**Second run (after restart):**
+**Второй запуск (после перезапуска):**
 ```
 User: "What's my favorite food?"
 AI: "Your favorite food is pizza! You mentioned that you love it."
 [No function calls - recalls from loaded memory]
 ```
 
-**Third run (duplicate statement):**
+**Третий запуск (дублирующее утверждение):**
 ```
 User: "My name is Alex."
 AI: "Yes, I remember your name is Alex!"
 [No function call - recognizes duplicate, just acknowledges]
 ```
 
-**Fourth run (updated information):**
+**Четвёртый запуск (обновлённая информация):**
 ```
 User: "I actually prefer sushi now."
 AI: "Got it! I've updated your favorite food to sushi."
 [Calls saveMemory once - updates existing value]
 ```
 
-## Reasoning Process
+## Процесс рассуждений
 
-The system prompt explicitly guides the agent through this decision tree:
+Системный промпт явно направляет агента через это дерево решений:
 ```
 New user statement
     ↓
@@ -244,4 +245,4 @@ Compare to existing memories
     └─→ New information? → Save as new
 ```
 
-This reasoning-first approach makes the agent more intelligent and efficient with memory operations!
+Этот подход «рассуждения сначала» делает агента более умным и эффективным при операциях с памятью!

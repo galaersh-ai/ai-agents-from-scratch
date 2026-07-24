@@ -1,12 +1,12 @@
-# Concept: Streaming & Response Control
+# Концепция: Стриминг и контроль ответов
 
-## Overview
+## Обзор
 
-This example demonstrates **streaming responses** and **token limits**, two essential techniques for building responsive AI agents with controlled output.
+Этот пример демонстрирует **стриминг ответов** и **лимиты токенов** — две необходимые техники для создания отзывчивых AI-агентов с контролируемым выводом.
 
-## The Streaming Problem
+## Проблема стриминга
 
-### Traditional (Non-Streaming) Approach
+### Традиционный (не-стриминговый) подход
 
 ```
 User sends prompt
@@ -16,13 +16,13 @@ User sends prompt
 Complete response appears all at once
 ```
 
-**Problems:**
-- Poor user experience (long wait)
-- No progress indication
-- Can't interrupt bad responses
-- Feels unresponsive
+**Проблемы:**
+- Плохой пользовательский опыт (длинное ожидание)
+- Нет индикации прогресса
+- Невозможно прервать плохой ответ
+- Выглядит неотзывчиво
 
-### Streaming Approach (This Example)
+### Стриминговый подход (этот пример)
 
 ```
 User sends prompt
@@ -36,17 +36,17 @@ User sends prompt
 [Continues token by token...]
 ```
 
-**Benefits:**
-- Immediate feedback
-- Progress visible
-- Can interrupt early
-- Feels interactive
+**Преимущества:**
+- Немедленная обратная связь
+- Видимый прогресс
+- Можно прервать рано
+- Выглядит интерактивно
 
-## How Streaming Works
+## Как работает стриминг
 
-### Token-by-Token Generation
+### Поколенная генерация токенов
 
-LLMs generate one token at a time internally. Streaming exposes this:
+LLM генерируют по одному токену за раз. Стриминг это обнажает:
 
 ```
 Internal LLM Process:
@@ -64,7 +64,7 @@ Wait for all tokens       Emit each token immediately
 └─→ Buffer → Return      └─→ Callback → Display
 ```
 
-### The onTextChunk Callback
+### Колбэк onTextChunk
 
 ```
 ┌────────────────────────────────────┐
@@ -86,11 +86,11 @@ Wait for all tokens       Emit each token immediately
     • Analyze content
 ```
 
-## Token Limits: maxTokens
+## Лимиты токенов: maxTokens
 
-### Why Limit Output?
+### Зачем ограничивать вывод?
 
-Without limits, models might generate:
+Без лимитов модели могут генерировать:
 ```
 User: "Explain hoisting"
 Model: [Generates 10,000 words including:
@@ -100,7 +100,7 @@ Model: [Generates 10,000 words including:
         - Never stops...]
 ```
 
-With limits:
+С лимитами:
 ```
 User: "Explain hoisting"
 Model: [Generates ~1500 words
@@ -109,7 +109,7 @@ Model: [Generates ~1500 words
         - Stops at 2000 tokens]
 ```
 
-### Token Budgeting
+### Бюджет токенов
 
 ```
 Context Window: 4096 tokens
@@ -122,7 +122,7 @@ Total used: 2300 tokens
 Available: 1796 tokens for future conversation
 ```
 
-### Cost vs Quality
+### Стоимость vs. Качество
 
 ```
 Token Limit        Output Quality      Use Case
@@ -133,9 +133,9 @@ Token Limit        Output Quality      Use Case
 No limit          Risk of rambling    When length unknown
 ```
 
-## Real-Time Applications
+## Приложения в реальном времени
 
-### Pattern 1: Interactive CLI
+### Паттерн 1: Интерактивный CLI
 
 ```
 User: "Explain closures"
@@ -146,7 +146,7 @@ Terminal: "A closure is a function..."
 User sees progress, knows it's working
 ```
 
-### Pattern 2: Web Application
+### Паттерн 2: Веб-приложение
 
 ```
 Browser                    Server
@@ -163,12 +163,12 @@ Browser                    Server
    │    (Keep appending...)  │
 ```
 
-Implementation:
+Реализация:
 - Server-Sent Events (SSE)
 - WebSockets
-- HTTP streaming
+- HTTP стриминг
 
-### Pattern 3: Multi-Consumer
+### Паттерн 3: Мульти-потребитель
 
 ```
          onTextChunk(text)
@@ -179,9 +179,9 @@ Implementation:
     Display  → Client   → Storage
 ```
 
-## Performance Characteristics
+## Характеристики производительности
 
-### Latency vs Throughput
+### Латентность vs. Пропускная способность
 
 ```
 Time to First Token (TTFT):
@@ -199,7 +199,7 @@ TTFT < 500ms → Feels instant
 Tok/s > 20 → Reads naturally
 ```
 
-### Resource Trade-offs
+### Компромиссы ресурсов
 
 ```
 Model Size      Memory    Speed     Quality
@@ -209,29 +209,29 @@ Model Size      Memory    Speed     Quality
 20B            ~12GB      Slower    Best
 ```
 
-## Advanced Concepts
+## Продвинутые концепции
 
-### Buffering Strategies
+### Стратегии буферизации
 
-**No Buffer (Immediate)**
+**Без буфера (немедленно)**
 ```
 Every token → callback → display
 └─ Smoothest UX but more overhead
 ```
 
-**Line Buffer**
+**Строковый буфер**
 ```
 Accumulate until newline → flush
 └─ Better for paragraph-based output
 ```
 
-**Time Buffer**
+**Временной буфер**
 ```
 Accumulate for 50ms → flush batch
 └─ Reduces callback frequency
 ```
 
-### Early Stopping
+### Ранняя остановка
 
 ```
 Generation in progress:
@@ -244,12 +244,12 @@ Generation in progress:
               "Let me reconsider"
 ```
 
-Useful for:
-- Detecting off-topic responses
-- Safety filters
-- Relevance checking
+Полезно для:
+- Обнаружения ответов не по теме
+- Фильтров безопасности
+- Проверки релевантности
 
-### Progressive Enhancement
+### Прогрессивное улучшение
 
 ```
 Partial Response Analysis:
@@ -268,9 +268,9 @@ Partial Response Analysis:
 Agent can begin working before response completes!
 ```
 
-## Context Size Awareness
+## Осведомлённость о размере контекста
 
-### Why It Matters
+### Почему это важно
 
 ```
 ┌────────────────────────────────┐
@@ -286,7 +286,7 @@ If maxTokens > 2796:
 └─→ Error or truncation!
 ```
 
-### Dynamic Adjustment
+### Динамическая настройка
 
 ```
 Available = contextSize - (prompt + history)
@@ -297,16 +297,16 @@ if (maxTokens > available) {
 }
 ```
 
-## Streaming in Agent Architectures
+## Стриминг в архитектурах агентов
 
-### Simple Agent
+### Простой агент
 
 ```
 User → LLM (streaming) → Display
        └─ onTextChunk shows progress
 ```
 
-### Multi-Step Agent
+### Многошаговый агент
 
 ```
 Step 1: Plan (stream) → Show thinking
@@ -315,7 +315,7 @@ Step 3: Result (stream) → Show outcome
        └─ User sees agent's process
 ```
 
-### Collaborative Agents
+### Совместные агенты
 
 ```
 Agent A (streaming) ──┐
@@ -324,9 +324,9 @@ Agent B (streaming) ──┘
        └─ Both stream simultaneously
 ```
 
-## Best Practices
+## Лучшие практики
 
-### 1. Always Set maxTokens
+### 1. Всегда устанавливайте maxTokens
 
 ```
 ✓ Good:
@@ -337,7 +337,7 @@ session.prompt(query)
 └─ May use entire context!
 ```
 
-### 2. Handle Partial Updates
+### 2. Обрабатывайте частичные обновления
 
 ```
 let fullResponse = '';
@@ -350,7 +350,7 @@ onTextChunk: (chunk) => {
 saveToDatabase(fullResponse);
 ```
 
-### 3. Provide Feedback
+### 3. Предоставляйте обратную связь
 
 ```
 onTextChunk: (chunk) => {
@@ -362,7 +362,7 @@ onTextChunk: (chunk) => {
 }
 ```
 
-### 4. Monitor Performance
+### 4. Мониторьте производительность
 
 ```
 const startTime = Date.now();
@@ -376,16 +376,16 @@ onTextChunk: (chunk) => {
 }
 ```
 
-## Key Takeaways
+## Ключевые выводы
 
-1. **Streaming improves UX**: Users see progress immediately
-2. **maxTokens controls cost**: Prevents runaway generation
-3. **Token-by-token generation**: LLMs produce one token at a time
-4. **onTextChunk callback**: Your hook into the generation process
-5. **Context awareness matters**: Monitor available space
-6. **Essential for production**: Real-time systems need streaming
+1. **Стриминг улучшает UX**: Пользователи видят прогресс немедленно
+2. **maxTokens контролирует стоимость**: Предотвращает бесконечную генерацию
+3. **Поколенная генерация**: LLM производят по одному токену
+4. **Колбэк onTextChunk**: Ваш хук в процесс генерации
+5. **Осведомлённость о контексте важна**: Мониторьте доступное пространство
+6. **Необходимо для продакшена**: Системы реального времени нуждаются в стриминге
 
-## Comparison
+## Сравнение
 
 ```
 Feature           intro.js    coding.js (this)
@@ -396,5 +396,3 @@ Real-time output  ✗           ✓
 Progress visible  ✗           ✓
 User control      ✗           ✓
 ```
-
-This pattern is foundational for building responsive, user-friendly AI agent interfaces.

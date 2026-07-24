@@ -1,8 +1,8 @@
-# Code explanation: `chain-of-thought.js`
+# Объяснение кода: `chain-of-thought.js`
 
-This walkthrough maps each CoT phase to the actual functions in the file.
+Это руководство отображает каждую фазу CoT на фактические функции в файле.
 
-## Run
+## Запуск
 
 ```bash
 node examples/14_chain-of-thought/chain-of-thought.js
@@ -10,19 +10,19 @@ node examples/14_chain-of-thought/chain-of-thought.js
 
 ---
 
-## 1) Setup: model, input case, and schemas
+## 1) Настройка: модель, входной случай и схемы
 
-At the top of the file:
+В верхнем уровне файла:
 
-- `RETURN_CASE` defines the customer request.
-- `RETURN_POLICY` defines hard business constraints.
-- `factsSchema`, `redFlagsSchema`, `legitimacySchema`, `policySchema`, `decisionSchema` define the JSON contract for each phase.
-- `promptJson(schema, userText)` is the shared utility that:
-  - resets chat history,
-  - enforces schema grammar,
-  - parses and repairs JSON safely.
+- `RETURN_CASE` определяет запрос клиента.
+- `RETURN_POLICY` определяет жёсткие бизнес-ограничения.
+- `factsSchema`, `redFlagsSchema`, `legitimacySchema`, `policySchema`, `decisionSchema` определяют JSON-контракт для каждой фазы.
+- `promptJson(schema, userText)` — общая утилита, которая:
+  - сбрасывает историю чата,
+  - обеспечивает грамматику схемы,
+  - безопасно парсит и исправляет JSON.
 
-This gives each phase function a strict output shape.
+Это даёт каждой функции фазы строгую форму вывода.
 
 ```js
 const RETURN_CASE = {
@@ -49,20 +49,20 @@ async function promptJson(schema, userText) {
 
 ---
 
-## 2) Phase 1 (Facts): `extractFacts()`
+## 2) Фаза 1 (Факты): `extractFacts()`
 
-`extractFacts(returnCase)` asks for:
+`extractFacts(returnCase)` запрашивает:
 
-- only explicit facts,
-- no scoring,
-- no judgment.
+- только явные факты,
+- без оценок,
+- без суждений.
 
-It returns:
+Возвращает:
 
 - `extracted_facts`
 - `missing_information`
 
-This protects against early bias before risk reasoning starts.
+Это защищает от раннего предвзятости до начала рассуждений о рисках.
 
 ```js
 async function extractFacts(returnCase) {
@@ -80,17 +80,17 @@ ${JSON.stringify(returnCase, null, 2)}`
 
 ---
 
-## 3) Phase 2 (Red Flags): `screenRedFlags()`
+## 3) Фаза 2 (Тревожные сигналы): `screenRedFlags()`
 
-`screenRedFlags(returnCase, facts)` performs explicit fraud screening with fixed checkpoints.
+`screenRedFlags(returnCase, facts)` выполняет явный скрининг мошенничества с фиксированными чекпоинтами.
 
-Output:
+Вывод:
 
-- `checkpoints[]` with `present/not_present/unclear`
+- `checkpoints[]` с `present/not_present/unclear`
 - `fraud_score`
 - `fraud_rationale`
 
-The important part is checklist coverage, not just one final score.
+Важная часть — покрытие чек-листа, а не просто одна финальная оценка.
 
 ```js
 async function screenRedFlags(returnCase, facts) {
@@ -112,21 +112,21 @@ Use these checkpoints:
 
 ---
 
-## 4) Phase 3 (Legitimacy): `assessLegitimacy()`
+## 4) Фаза 3 (Легитимность): `assessLegitimacy()`
 
-`assessLegitimacy(returnCase, facts)` builds the customer-side argument:
+`assessLegitimacy(returnCase, facts)` строит аргумент со стороны клиента:
 
-- plausible defect indicators,
-- fairness/context factors,
-- supporting evidence quality.
+- правдоподобные индикаторы дефекта,
+- факторы справедливости/контекста,
+- качество подтверждающих доказательств.
 
-Output:
+Вывод:
 
 - `customer_supporting_points[]`
 - `legitimacy_score`
 - `legitimacy_rationale`
 
-Without this phase, risk logic tends to dominate every borderline case.
+Без этой фазы логика рисков tends доминирует в каждом пограничном случае.
 
 ```js
 async function assessLegitimacy(returnCase, facts) {
@@ -142,20 +142,20 @@ Do not reference fraud score. Focus on fairness and plausible product failure.`
 
 ---
 
-## 5) Phase 4 (Policy): `checkPolicy()`
+## 5) Фаза 4 (Политика): `checkPolicy()`
 
-`checkPolicy(returnCase, policy, redFlags, legitimacy)` applies hard rules:
+`checkPolicy(returnCase, policy, redFlags, legitimacy)` применяет жёсткие правила:
 
-- return window
-- value thresholds
-- return-history triggers
+- окно возврата
+- пороги стоимости
+- триггеры по истории возвратов
 
-Output:
+Вывод:
 
-- per-rule statuses in `policy_checks[]`
+- статусы по правилам в `policy_checks[]`
 - `policy_outcome` (`approve`, `reject`, `manual_review`)
 
-This is the governance gate between analysis and action.
+Это ворота управления между анализом и действием.
 
 ```js
 async function checkPolicy(returnCase, policy, redFlags, legitimacy) {
@@ -175,11 +175,11 @@ Legitimacy score: ${legitimacy.legitimacy_score}`
 
 ---
 
-## 6) Phase 5 (Decision): `makeDecision()`
+## 6) Фаза 5 (Решение): `makeDecision()`
 
-`makeDecision(...)` can decide only after all prior phases.
+`makeDecision(...)` может решить только после всех предыдущих фаз.
 
-Output:
+Вывод:
 
 - `final_decision`
 - `confidence`
@@ -187,7 +187,7 @@ Output:
 - `customer_message`
 - `internal_note`
 
-The prompt explicitly references conflict handling (for example fraud 6/10 vs legitimacy 7/10), so the result must explain how policy resolves the tension.
+Промпт явно ссылается на обработку конфликтов (например, мошенничество 6/10 vs легитимность 7/10), поэтому результат должен объяснять, как политика разрешает напряжение.
 
 ```js
 async function makeDecision(returnCase, phase1Facts, redFlags, legitimacy, policyResult) {
@@ -203,21 +203,21 @@ show how policy resolves it.`
 
 ---
 
-## 7) Orchestration flow: `runChainOfThoughtReturnDecision()`
+## 7) Поток оркестрации: `runChainOfThoughtReturnDecision()`
 
-The main controller executes phases in strict order:
+Главный контроллер выполняет фазы в строгом порядке:
 
-1. facts
-2. red flags
-3. legitimacy
-4. policy check
-5. final decision
+1. факты
+2. тревожные сигналы
+3. легитимность
+4. проверка политик
+5. финальное решение
 
-Then it prints a compact report and writes a browser visualization via:
+Затем печатает компактный отчёт и записывает визуализацию для браузера через:
 
 - `writeCoTReturnVisualization(...)`
 
-This keeps the core file focused on CoT logic.
+Это позволяет основному файлу оставаться сфокусированным на логике CoT.
 
 ```js
 async function runChainOfThoughtReturnDecision(returnCase, policy) {
@@ -235,24 +235,24 @@ async function runChainOfThoughtReturnDecision(returnCase, policy) {
 
 ---
 
-## 8) Adapting the implementation per model class
+## 8) Адаптация реализации под класс модели
 
-The current code uses `Qwen3-1.7B-Q8_0.gguf`, which can run as both a reasoning and a non-reasoning model. The 5-phase scaffolding is designed to work for either class - but the way you tune it differs.
+Текущий код использует `Qwen3-1.7B-Q8_0.gguf`, который может работать как рассуждающая, так и нерассуждающая модель. Опора из 5 фаз спроектирована для работы с любым классом — но способ настройки различается.
 
-For the conceptual side of this distinction, see the "CoT with reasoning vs non-reasoning LLMs" section in [CONCEPT.md](CONCEPT.md).
+Для концептуальной стороны этого различия см. раздел «CoT с рассуждающими vs нерассуждающими LLM» в [CONCEPT.md](CONCEPT.md).
 
-### What the current code assumes
+### Что предполагает текущий код
 
-- A hybrid model that may or may not reason internally.
-- Per-phase JSON schemas via `promptJson(...)`.
-- Low `temperature` (0.2) and a generous `maxTokens` budget per phase.
-- One isolated chat history per phase via `session.resetChatHistory()`.
+- Гибридная модель, которая может или не может рассуждать внутренне.
+- JSON-схемы для каждой фазы через `promptJson(...)`.
+- Низкая `temperature` (0.2) и щедрый бюджет `maxTokens` на каждую фазу.
+- Изолированная история чата для каждой фазы через `session.resetChatHistory()`.
 
-This is intentionally a middle-ground configuration so the example works without forcing readers to download a specific model.
+Это намеренно средняя конфигурация, чтобы пример работал без необходимости скачивать конкретную модель.
 
-### Tuning for non-reasoning models
+### Настройка для нерассуждающих моделей
 
-If you swap in a base/chat model without internal reasoning (Llama-3 chat, Phi, Mistral-instruct, Qwen3 with `thoughts: "discourage"`):
+Если Вы подставляете базовую/чат-модель без внутренних рассуждений (Llama-3 chat, Phi, Mistral-instruct, Qwen3 с `thoughts: "discourage"`):
 
 ```js
 const raw = await session.prompt(userText, {
@@ -262,14 +262,14 @@ const raw = await session.prompt(userText, {
 });
 ```
 
-- Lower `temperature` further (0.05 - 0.15). Borderline cases regress badly with creative sampling.
-- Increase `maxTokens` per phase. The model often needs room to "talk to itself" inside the JSON before it commits to scores.
-- Keep schemas strict. Avoid wide free-form fields; replace them with enums, fixed-length arrays, or short bounded strings.
-- Add explicit examples to phase prompts ("Example checkpoint: { check, status, evidence }"). Non-reasoning models latch on to format examples much faster than abstract specs.
+- Понизьте `temperature` ещё (0.05 - 0.15). Пограничные случаи сильно деградируют при креативном сэмплировании.
+- Увеличьте `maxTokens` на каждую фазу. Модели часто нужно пространство «поговорить с собой» внутри JSON перед тем, как она зафиксирует оценки.
+- Держите схемы строгими. Избегайте широких полей свободного формата; заменяйте их перечислениями, фиксированными массивами или короткими ограниченными строками.
+- Добавьте явные примеры в промпты фаз («Пример чекпоинта: { check, status, evidence }»). Нерассуждающие модели гораздо быстрее цепляются за форматные примеры, чем за абстрактные спецификации.
 
-### Tuning for reasoning models
+### Настройка для рассуждающих моделей
 
-If you swap in a reasoning-tuned model (o3, DeepSeek-R1, Qwen3 with `thoughts: "auto"`, Claude Extended Thinking via API):
+Если Вы подставляете рассуждающую модель (o3, DeepSeek-R1, Qwen3 с `thoughts: "auto"`, Claude Extended Thinking через API):
 
 ```js
 const raw = await session.prompt(userText, {
@@ -279,14 +279,14 @@ const raw = await session.prompt(userText, {
 });
 ```
 
-- Shorten phase prompts. The model already reasons internally; verbose instructions add noise.
-- Lower `maxTokens` for purely structural phases (Facts, Policy Check). They do not need long thinking budgets.
-- Keep schemas as a **contract**, not as a reasoning crutch. Their main job here is downstream interoperability.
-- If the runtime supports it, log the internal reasoning trace for debugging only - never as part of the audit trail.
+- Сократите промпты фаз. Модель уже рассуждает внутри; многословные инструкции добавляют шум.
+- Понизьте `maxTokens` для чисто структурных фаз (Факты, Проверка политик). Им не нужны большие бюджеты на размышление.
+- Сохраняйте схемы как **контракт**, а не как подпорку для рассуждений. Их основная задача здесь — межуровневая совместимость.
+- Если runtime поддерживает, логируйте внутренний след рассуждений только для отладки — никогда как часть аудит-следа.
 
-### Qwen3 specifics
+### Специфика Qwen3
 
-For `node-llama-cpp`, the clean switch for Qwen thought behavior is the wrapper option:
+Для `node-llama-cpp` чистый переключатель поведения мышления Qwen — опция обёртки:
 
 ```js
 import { QwenChatWrapper } from "node-llama-cpp";
@@ -301,7 +301,7 @@ const nonReasoningWrapper = new QwenChatWrapper({
 });
 ```
 
-Then create the chat session with the wrapper you want for that phase/run:
+Затем создайте чат-сессию с обёрткой, которую Вы хотите для этой фазы/запуска:
 
 ```js
 const session = new LlamaChatSession({
@@ -311,24 +311,24 @@ const session = new LlamaChatSession({
 });
 ```
 
-A useful pattern is mixing wrapper modes per phase:
+Полезный паттерн — смешивать режимы обёрток для разных фаз:
 
-- `thoughts: "discourage"` on Phase 1 (Facts) and Phase 4 (Policy Check) - mechanical work.
-- `thoughts: "auto"` on Phase 2 (Red Flags), Phase 3 (Legitimacy), and Phase 5 (Decision) - judgment work.
+- `thoughts: "discourage"` на фазе 1 (Факты) и фазе 4 (Проверка политик) — механическая работа.
+- `thoughts: "auto"` на фазе 2 (Тревожные сигналы), фазе 3 (Легитимность) и фазе 5 (Решение) — работа суждения.
 
-This keeps total latency low while preserving reasoning where it matters.
+Это сохраняет общую латентность низкой, обеспечивая рассуждения там, где это важно.
 
-### Per-phase callouts
+### Выноски по фазам
 
-- **Phase 1 (Facts)** - non-reasoning models often hallucinate fact entries that look plausible but were never in the input. Tighten the schema (`minItems`, enum-like fields) and instruct explicitly: "Do not infer."
-- **Phase 2 (Red Flags)** - reasoning models tend to over-suspect when given a fraud framing. Anchor them with the fixed checkpoint list rather than open-ended red flag generation.
-- **Phase 3 (Legitimacy)** - this phase exists exactly to counter Phase 2's bias. Do not collapse it into Phase 2 to save tokens, regardless of model class. It is a structural counterweight.
-- **Phase 4 (Policy Check)** - both classes benefit from injecting the policy as inline JSON rather than describing it in prose. Reduces drift and silent rule invention.
-- **Phase 5 (Decision)** - confidence calibration differs sharply between classes. A `confidence: 0.79` from a reasoning model is not directly comparable to `0.79` from a base model. Treat confidence as model-internal; route on `final_decision` and `policy_outcome` instead.
+- **Фаза 1 (Факты)** — нерассуждающие модели часто галлюцинируют записи фактов, которые выглядят правдоподобно, но никогда не были во входных данных. Ужесточите схему (`minItems`, поля-перечисления) и инструктируйте явно: «Не предполагайте.»
+- **Фаза 2 (Тревожные сигналы)** — рассуждающие модели tend к чрезмерному подозрению при подаче фрейма мошенничества. Закрепите их фиксированным списком чекпоинтов вместо генерации тревожных сигналов с открытым окончанием.
+- **Фаза 3 (Легитимность)** — эта фаза существует именно для противодействия предвзятости фазы 2. Не сворачивайте её в фазу 2 для экономии токенов, независимо от класса модели. Это структурный противовес.
+- **Фаза 4 (Проверка политик)** — оба класса выигрывают от инъекции политики как inline JSON, а не описания её прозой. Снижает дрейф и молчаливое изобретение правил.
+- **Фаза 5 (Решение)** — калибровка уверенности резко различается между классами. `confidence: 0.79` от рассуждающей модели не напрямую сравнимо с `0.79` от базовой модели. Рассматривайте confidence как внутреннее для модели; маршрутизируйте по `final_decision` и `policy_outcome`.
 
 ---
 
-## Suggested code-reading order
+## Рекомендуемый порядок чтения кода
 
 1. `promptJson`
 2. `extractFacts`
@@ -338,4 +338,4 @@ This keeps total latency low while preserving reasoning where it matters.
 6. `makeDecision`
 7. `runChainOfThoughtReturnDecision`
 
-That sequence mirrors runtime and makes the example easy to reason about.
+Эта последовательность отражает runtime и делает пример понятным для рассуждений.

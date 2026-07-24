@@ -1,14 +1,13 @@
-# Concept: Parallel Processing & Performance Optimization
+# Концепция: Параллельная обработка и оптимизация производительности
 
-## Overview
+## Обзор
 
-This example demonstrates **concurrent execution** of multiple LLM requests using separate context sequences, a critical technique for building scalable AI agent systems.
+Этот пример демонстрирует **параллельное выполнение** нескольких запросов LLM с использованием отдельных контекстных последовательностей — критически важную технику для создания масштабируемых систем AI-агентов.
 
-## The Performance Problem
+## Проблема производительности
 
-### Sequential Processing (Slow)
-
-Traditional approach processes one request at a time:
+### Последовательная обработка (медленно)
+Традиционный подход обрабатывает один запрос за раз:
 
 ```
 Request 1 ────────→ Response 1 (2s)
@@ -18,9 +17,8 @@ Request 1 ────────→ Response 1 (2s)
                                         Total: 4 seconds
 ```
 
-### Parallel Processing (Fast)
-
-This example processes multiple requests simultaneously:
+### Параллельная обработка (быстро)
+Этот пример обрабатывает несколько запросов одновременно:
 
 ```
 Request 1 ────────→ Response 1 (2s) ──┐
@@ -29,11 +27,11 @@ Request 2 ────────→ Response 2 (2s) ──┘
      (Both running at the same time)
 ```
 
-**Performance gain: 2x speedup!**
+**Выигрыш в производительности: 2x ускорение!**
 
-## Core Concept: Context Sequences
+## Ключевая концепция: Контекстные последовательности
 
-### Single vs. Multiple Sequences
+### Одна vs. несколько последовательностей
 
 ```
 ┌────────────────────────────────────────────────┐
@@ -49,17 +47,17 @@ Request 2 ────────→ Response 2 (2s) ──┘
 └────────────────────────────────────────────────┘
 ```
 
-**Key insights:**
-- Model weights are shared (memory efficient)
-- Each sequence has independent history
-- Sequences can process in parallel
-- Both use the same underlying model
+**Ключевые выводы:**
+- Веса модели разделяются (эффективно по памяти)
+- У каждой последовательности своя независимая история
+- Последовательности могут обрабатываться параллельно
+- Все используют одну и ту же базовую модель
 
-## How Parallel Processing Works
+## Как работает параллельная обработка
 
-### Promise.all Pattern
+### Паттерн Promise.all
 
-JavaScript's `Promise.all()` enables concurrent execution:
+`Promise.all()` в JavaScript обеспечивает параллельное выполнение:
 
 ```
 Sequential:
@@ -77,7 +75,7 @@ await Promise.all([
 Total: 2s (whichever finishes last)
 ```
 
-### Execution Timeline
+### Хронология выполнения
 
 ```
 Time →  0s      1s      2s      3s      4s
@@ -91,11 +89,11 @@ Seq 2:  ├───────Processing───────┤
         Both complete at ~2s instead of 4s!
 ```
 
-## GPU Batch Processing
+## Пакетная обработка GPU
 
-### Why Batching Matters
+### Почему батчинг важен
 
-Modern GPUs process multiple operations efficiently:
+Современные GPU эффективно обрабатывают несколько операций:
 
 ```
 Without Batching (Inefficient)
@@ -111,9 +109,9 @@ GPU: [Tokens 1-1024]  ← Full batch
      └─ GPU fully utilized!
 ```
 
-**batchSize parameter**: Controls how many tokens process together.
+**Параметр batchSize**: Контролирует количество токенов, обрабатываемых вместе.
 
-### Trade-offs
+### Компромиссы
 
 ```
 Small Batch (e.g., 128)     Large Batch (e.g., 2048)
@@ -124,11 +122,11 @@ Small Batch (e.g., 128)     Large Batch (e.g., 2048)
 ✗ GPU underutilized         ✗ May exceed VRAM
 ```
 
-**Sweet spot**: Usually 512-1024 for consumer GPUs.
+**Оптимальный выбор**: Обычно 512-1024 для потребительских GPU.
 
-## Architecture Patterns
+## Архитектурные паттерны
 
-### Pattern 1: Multi-User Service
+### Паттерн 1: Мульти-сервис
 
 ```
 ┌─────────┐  ┌─────────┐  ┌─────────┐
@@ -153,7 +151,7 @@ Small Batch (e.g., 128)     Large Batch (e.g., 2048)
          └────────────────┘
 ```
 
-### Pattern 2: Multi-Agent System
+### Паттерн 2: Мультиагентная система
 
 ```
          ┌──────────────┐
@@ -172,7 +170,7 @@ Small Batch (e.g., 128)     Large Batch (e.g., 2048)
        (All run in parallel)
 ```
 
-### Pattern 3: Pipeline Processing
+### Паттерн 3: Конвейерная обработка
 
 ```
 Input Queue: [Task1, Task2, Task3, ...]
@@ -190,11 +188,11 @@ Input Queue: [Task1, Task2, Task3, ...]
             Output: [R1, R2, R3]
 ```
 
-## Resource Management
+## Управление ресурсами
 
-### Memory Allocation
+### Выделение памяти
 
-Each sequence consumes memory:
+Каждая последовательность потребляет память:
 
 ```
 ┌──────────────────────────────────┐
@@ -213,12 +211,12 @@ Each sequence consumes memory:
         Maximum capacity!
 ```
 
-**Formula**: 
+**Формула**: 
 ```
 Required VRAM = Model + Context + (NumSequences × KVCache)
 ```
 
-### Finding Optimal Sequence Count
+### Определение оптимального количества последовательностей
 
 ```
 Too Few (1-2)              Optimal (4-8)           Too Many (16+)
@@ -228,15 +226,15 @@ GPU underutilized          Balanced use            Memory overflow
 Slow throughput            Best performance        Thrashing/crashes
 ```
 
-**Test your system**:
-1. Start with 2 sequences
-2. Monitor VRAM usage
-3. Increase until performance plateaus
-4. Back off if memory issues occur
+**Протестируйте свою систему**:
+1. Начните с 2 последовательностей
+2. Мониторьте использование VRAM
+3. Увеличивайте, пока производительность не стабилизируется
+4. Уменьшайте при проблемах с памятью
 
-## Real-World Scenarios
+## Практические сценарии
 
-### Scenario 1: Chatbot Service
+### Сценарий 1: Сервис чат-ботов
 
 ```
 Challenge: 100 users, each waiting 2s per response
@@ -245,7 +243,7 @@ Parallel (10 seq): 10 batches × 2s = 20s
                    10x speedup!
 ```
 
-### Scenario 2: Batch Analysis
+### Сценарий 2: Пакетный анализ
 
 ```
 Task: Analyze 1000 documents
@@ -254,7 +252,7 @@ Parallel (8 seq): 125 batches × 3s = 6.25 minutes
                   8x speedup!
 ```
 
-### Scenario 3: Multi-Agent Collaboration
+### Сценарий 3: Мультиагентное сотрудничество
 
 ```
 Agents: Planner, Analyzer, Executor (all needed)
@@ -262,9 +260,9 @@ Sequential: Wait for each → Slow pipeline
 Parallel: All work together → Fast decision-making
 ```
 
-## Limitations & Considerations
+## Ограничения и соображения
 
-### 1. Context Capacity Sharing
+### 1. Разделение ёмкости контекста
 
 ```
 Problem: Sequences share total context space
@@ -276,7 +274,7 @@ Total context: 4096 tokens
 More sequences = Less history per sequence!
 ```
 
-### 2. CPU vs GPU Parallelism
+### 2. Параллелизм CPU vs GPU
 
 ```
 With GPU:                    CPU Only:
@@ -285,7 +283,7 @@ Multiple CUDA streams        Single thread context-switching
                             (Still helps throughput!)
 ```
 
-### 3. Not Always Faster
+### 3. Не всегда быстрее
 
 ```
 When parallel helps:         When it doesn't:
@@ -294,16 +292,18 @@ When parallel helps:         When it doesn't:
 • Multiple users            • Single sequential conversation
 ```
 
-## Best Practices
+## Лучшие практики
 
-### 1. Design for Independence
+### 1. Проектируйте для независимости
+
 ```
 ✓ Good: Separate user conversations
 ✓ Good: Independent analysis tasks
 ✗ Bad: Sequential reasoning steps (use ReAct instead)
 ```
 
-### 2. Monitor Resources
+### 2. Мониторьте ресурсы
+
 ```
 Track:
 • VRAM usage per sequence
@@ -312,7 +312,8 @@ Track:
 • Error rates
 ```
 
-### 3. Implement Graceful Degradation
+### 3. Реализуйте изящную деградацию
+
 ```
 if (vramExceeded) {
     reduceSequenceCount();
@@ -320,7 +321,8 @@ if (vramExceeded) {
 }
 ```
 
-### 4. Handle Errors Properly
+### 4. Правильно обрабатывайте ошибки
+
 ```javascript
 try {
     const results = await Promise.all([...]);
@@ -330,7 +332,7 @@ try {
 }
 ```
 
-## Comparison: Evolution of Performance
+## Сравнение: Эволюция производительности
 
 ```
 Stage              Requests/Min    Pattern
@@ -341,16 +343,16 @@ Stage              Requests/Min    Pattern
 4. Distributed        1000+         Multiple machines
 ```
 
-## Key Takeaways
+## Ключевые выводы
 
-1. **Parallelism is essential** for production AI agent systems
-2. **Sequences share model** but maintain independent state
-3. **Promise.all** enables concurrent JavaScript execution
-4. **Batch size** affects GPU utilization and throughput
-5. **Memory is the limit** - more sequences need more VRAM
-6. **Not magic** - only helps with independent tasks
+1. **Параллелизм необходим** для production-систем AI-агентов
+2. **Последовательности разделяют модель**, но поддерживают независимое состояние
+3. **Promise.all** обеспечивает параллельное выполнение JavaScript
+4. **Размер батча** влияет на утилизацию GPU и пропускную способность
+5. **Память — ограничение**: больше последовательностей = больше VRAM
+6. **Не волшебство**: помогает только для независимых задач
 
-## Practical Formula
+## Практическая формула
 
 ```
 Speedup = min(
@@ -360,6 +362,6 @@ Speedup = min(
 )
 ```
 
-Typically: 2-10x speedup for well-designed systems.
+Обычно: 2-10x ускорение для хорошо спроектированных систем.
 
-This technique is foundational for building scalable agent architectures that can handle real-world workloads efficiently.
+Эта техника является фундаментом для создания масштабируемых архитектур агентов, которые могут эффективно обрабатывать реальные рабочие нагрузки.

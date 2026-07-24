@@ -1,10 +1,10 @@
-# Code Explanation: think.js
+# Объяснение кода: think.js
 
-This file demonstrates using system prompts for **logical reasoning** and **quantitative problem-solving**, showing how to configure an LLM as a specialized reasoning agent.
+Этот файл демонстрирует использование системных промптов для **логических рассуждений** и **решения количественных задач**, показывая, как настроить LLM как специализированного рассуждающего агента.
 
-## Step-by-Step Code Breakdown
+## Пошаговый разбор кода
 
-### 1. Import and Setup (Lines 1-8)
+### 1. Импорт и настройка (строки 1-8)
 ```javascript
 import {
     getLlama,
@@ -15,10 +15,10 @@ import path from "path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 ```
-- Standard imports for LLM interaction
-- Path setup for locating the model file
+- Стандартные импорты для взаимодействия с LLM
+- Настройка пути для locating файла модели
 
-### 2. Initialize and Load Model (Lines 10-18)
+### 2. Инициализация и загрузка модели (строки 10-18)
 ```javascript
 const llama = await getLlama();
 const model = await llama.loadModel({
@@ -30,11 +30,11 @@ const model = await llama.loadModel({
     )
 });
 ```
-- Uses **Qwen3-1.7B-Q6_K**: A 1.7B parameter model with 6-bit quantization
-- Smaller than the translation example (1.7B vs 8B parameters)
-- Q6_K quantization provides a balance between size and quality
+- Использует **Qwen3-1.7B-Q6_K**: модель с 1.7B параметрами и 6-битной квантизацией
+- Меньше, чем в примере перевода (1.7B vs 8B параметров)
+- Квантизация Q6_K обеспечивает баланс между размером и качеством
 
-### 3. Define the System Prompt (Lines 19-24)
+### 3. Определение системного промпта (строки 19-24)
 ```javascript
 const systemPrompt = `You are an expert logical and quantitative reasoner.
     Your goal is to analyze real-world word problems involving families, quantities, averages, and relationships 
@@ -44,28 +44,28 @@ const systemPrompt = `You are an expert logical and quantitative reasoner.
     `
 ```
 
-**Key elements:**
+**Ключевые элементы:**
 
-1. **Role**: "expert logical and quantitative reasoner"
-   - Sets expectations for mathematical/analytical thinking
+1. **Роль**: «expert logical and quantitative reasoner»
+   - Устанавливает ожидания для математического/аналитического мышления
 
-2. **Task Scope**: "real-world word problems involving families, quantities, averages, and relationships"
-   - Tells the model what type of problems to expect
-   - Primes it for complex counting and calculation tasks
+2. **Область задач**: «real-world word problems involving families, quantities, averages, and relationships»
+   - Говорит модели, какой тип задач ожидать
+   - Подготавливает к сложным задачам подсчёта и вычислений
 
-3. **Output Constraint**: "Return the correct final number as a single value - no explanation"
-   - Forces concise output
-   - Just the answer, not the work
+3. **Ограничение вывода**: «Return the correct final number as a single value - no explanation»
+   - Принуждает к краткому выводу
+   - Только ответ, без работы
 
-### Why This System Prompt Design?
+### Почему такой дизайн системного промпта?
 
-The prompt is designed for the specific problem type:
-- Word problems with complex family relationships
-- Multiple nested conditions
-- Requires careful tracking of people and quantities
-- Needs arithmetic calculation
+Промпт спроектирован для конкретного типа задач:
+- Задачи со словами со сложными семейными отношениями
+- Многоуровневые условия
+- Требует внимательного отслеживания людей и количеств
+- Нужны арифметические вычисления
 
-### 4. Create Context and Session (Lines 25-29)
+### 4. Создание контекста и сессии (строки 25-29)
 ```javascript
 const context = await model.createContext();
 const session = new LlamaChatSession({
@@ -73,11 +73,11 @@ const session = new LlamaChatSession({
     systemPrompt
 });
 ```
-- Creates context for the conversation
-- Initializes session with the reasoning system prompt
-- No chat wrapper needed (using model's default format)
+- Создаёт контекст для разговора
+- Инициализирует сессию с системным промптом рассуждений
+- Chat-обёртка не нужна (используется формат модели по умолчанию)
 
-### 5. The Complex Word Problem (Lines 31-40)
+### 5. Сложная задача со словами (строки 31-40)
 ```javascript
 const prompt = `My family reunion is this week, and I was assigned the mashed potatoes to bring. 
 The attendees include my married mother and father, my twin brother and his family, my aunt and her family, my grandma 
@@ -91,70 +91,70 @@ How many whole bags of potatoes do I need?
 `;
 ```
 
-**This is intentionally complex to test reasoning:**
+**Это намеренно сложная задача для тестирования рассуждений:**
 
-**People to count:**
-- Speaker (1)
-- Mother and father (2)
-- Twin brother + spouse (2)
-- Brother's 2 kids (2)
-- Aunt + spouse (2)
-- Aunt's 1 kid (1)
-- Grandma (1)
-- Grandma's brother + spouse (2)
-- Brother's daughter + spouse (2)
-- Their 3 kids (3, but don't eat carbs)
+**Люди для подсчёта:**
+- Говорящий (1)
+- Мать и отец (2)
+- Близнец-брат + супруг(а) (2)
+- 2 ребёнка брата (2)
+- Тётя + супруг(а) (2)
+- 1 ребёнок тёти (1)
+- Бабушка (1)
+- Брат бабушки + супруг(а) (2)
+- Дочь брата + супруг(а) (2)
+- Их 3 ребёнка (3, но не едят углеводы)
 
-**Calculations needed:**
-1. Count total adults
-2. Count total kids
-3. Subtract non-eating kids
-4. Calculate potato needs: (adults × 1.5) + (eating kids × 0.5)
-5. Convert to pounds: total potatoes × 0.5 lbs
-6. Convert to bags: pounds ÷ 5, round up
+**Необходимые вычисления:**
+1. Подсчитать общее число взрослых
+2. Подсчитать общее число детей
+3. Вычесть не едящих детей
+4. Рассчитать потребность в картофеле: (взрослые × 1.5) + (едящие дети × 0.5)
+5. Перевести в фунты: всего картофеля × 0.5 фунтов
+6. Перевести в мешки: фунты ÷ 5, округлить вверх
 
-**The complexity:**
-- Family relationships (who's married to whom)
-- Deceased people (subtract from count)
-- Special dietary needs (second cousins don't eat carbs)
-- Unit conversions (potatoes → pounds → bags)
+**Сложность:**
+- Семейные отношения (кто на ком женат)
+- Умершие люди (вычесть из подсчёта)
+- Особые диетические потребности (двоюродные братья/сёстры не едят углеводы)
+- Конвертация единиц (картофель → фунты → мешки)
 
-### 6. Execute and Display (Lines 42-43)
+### 6. Выполнение и вывод (строки 42-43)
 ```javascript
 const answer = await session.prompt(prompt);
 console.log(`AI: ${answer}`);
 ```
-- Sends the complex problem to the model
-- The model uses its reasoning abilities to work through the problem
-- Outputs just the final number (based on system prompt)
+- Отправляет сложную задачу модели
+- Модель использует свои способности к рассуждению для решения задачи
+- Выводит только финальное число (на основе системного промпта)
 
-### 7. Cleanup (Lines 45-48)
+### 7. Очистка (строки 45-48)
 ```javascript
 session.dispose()
 context.dispose()
 model.dispose()
 llama.dispose()
 ```
-- Standard resource cleanup
+- Стандартная очистка ресурсов
 
-## Key Concepts Demonstrated
+## Продемонстрированные ключевые концепции
 
-### 1. Reasoning Agent Configuration
-This shows how to configure an LLM for analytical thinking:
+### 1. Конфигурация рассуждающего агента
+Это показывает, как настроить LLM для аналитического мышления:
 
 ```
 System Prompt → LLM becomes a "reasoning engine"
 ```
 
-Instead of conversational AI, we get:
-- Focused analytical processing
-- Mathematical computation
-- Logical deduction
+Вместо разговорного AI мы получаем:
+- Фокусированную аналитическую обработку
+- Математические вычисления
+- Логический дедукцию
 
-### 2. Output Format Control
-Compare these approaches:
+### 2. Контроль формата вывода
+Сравните эти подходы:
 
-**Without constraint:**
+**Без ограничений:**
 ```
 AI: Let me work through this step by step.
 First, I'll count the adults...
@@ -162,96 +162,96 @@ First, I'll count the adults...
 So the answer is 3 bags.
 ```
 
-**With constraint (this example):**
+**С ограничениями (этот пример):**
 ```
 AI: 3
 ```
 
-### 3. Problem Complexity Testing
-This example tests the model's ability to:
-- Parse complex natural language
-- Track multiple entities and relationships
-- Apply arithmetic operations
-- Handle edge cases (deceased people, dietary restrictions)
-- Perform unit conversions
+### 3. Тестирование сложности задач
+Этот пример тестирует способность модели:
+- Парсить сложный естественный язык
+- Отслеживать множество сущностей и отношений
+- Применять арифметические операции
+- Обрабатывать пограничные случаи (умершие люди, диетические ограничения)
+- Выполнять конвертацию единиц
 
-### 4. Specialized Task Agents
-This demonstrates creating task-specific agents:
+### 4. Специализированные агенты задач
+Это демонстрирует создание агентов для конкретных задач:
 
 ```
 General LLM + "Reasoning Agent" System Prompt = Math Problem Solver
 ```
 
-Same pattern works for:
-- Logic puzzles
-- Data analysis
-- Scientific calculations
-- Statistical reasoning
+Тот же паттерн работает для:
+- Логических головоломок
+- Анализа данных
+- Научных вычислений
+- Статистических рассуждений
 
-## Challenges & Limitations
+## Проблемы и ограничения
 
-### 1. Model Size Matters
-The 1.7B parameter model may struggle with:
-- Very complex counting problems
-- Multi-step reasoning requiring working memory
-- Edge cases in the problem
+### 1. Размер модели важен
+Модель с 1.7B параметрами может испытывать трудности с:
+- Очень сложными задачами подсчёта
+- Многошаговыми рассуждениями, требующими рабочей памяти
+- Пограничными случаями в задаче
 
-Larger models (7B, 13B+) generally perform better on reasoning tasks.
+Более крупные модели (7B, 13B+) обычно лучше справляются с задачами рассуждений.
 
-### 2. Hidden Reasoning
-The system prompt asks for "just the answer," so we don't see:
-- The model's reasoning process
-- Where it might have made mistakes
-- Its confidence level
+### 2. Скрытые рассуждения
+Системный промпт просит «только ответ», поэтому мы не видим:
+- Процесс рассуждений модели
+- Где она могла допустить ошибки
+- Её уровень уверенности
 
-### 3. No Tool Use
-The model must do all calculations "in its head" without:
-- A calculator
-- Note-taking
-- Step-by-step verification
+### 3. Нет использования инструментов
+Модель должна выполнять все вычисления «в голове» без:
+- Калькулятора
+- Записей
+- Пошаговой верификации
 
-Later examples (like react-agent) address this by giving the model tools.
+Последующие примеры (такие как react-agent) решают эту проблему, предоставляя модели инструменты.
 
-## Why This Matters for AI Agents
+## Почему это важно для AI-агентов
 
-### Reasoning is Fundamental
-All useful agents need reasoning capabilities:
-- **Planning agents**: Reason about sequences of actions
-- **Research agents**: Analyze and synthesize information
-- **Decision agents**: Evaluate options and consequences
+### Рассуждения — фундамент
+Все полезные агенты нуждаются в способности к рассуждениям:
+- **Агенты планирования**: Рассуждают о последовательностях действий
+- **Исследовательские агенты**: Анализируют и обобщают информацию
+- **Агенты решений**: Оценивают варианты и последствия
 
-### System Prompt Shapes Behavior
-This example shows that the same model can behave differently based on instructions:
-- Translator agent (previous example)
-- Reasoning agent (this example)
-- Code agent (later examples)
+### Системный промпт формирует поведение
+Этот пример показывает, что одна и та же модель может вести себя по-разному в зависимости от инструкций:
+- Агент-переводчик (предыдущий пример)
+- Рассуждающий агент (этот пример)
+- Кодирующий агент (последующие примеры)
 
-### Foundation for Complex Agents
-Understanding how to prompt for reasoning is essential before adding:
-- Tools (giving the model a calculator)
-- Memory (remembering previous calculations)
-- Multi-step processes (ReAct pattern)
+### Фундамент для сложных агентов
+Понимание того, как формулировать промпты для рассуждений, необходимо перед добавлением:
+- Инструментов (предоставление модели калькулятора)
+- Памяти (запоминание предыдущих вычислений)
+- Многошаговых процессов (паттерн ReAct)
 
-## Expected Output
+## Ожидаемый вывод
 
-Running this script should output something like:
+Запуск этого скрипта должен вывести что-то вроде:
 ```
 AI: 3
 ```
 
-The exact answer depends on the model's ability to:
-- Correctly count all family members
-- Apply the eating rates
-- Convert units
-- Round up for whole bags
+Точный ответ зависит от способности модели:
+- Правильно подсчитать всех членов семьи
+- Применить нормы потребления
+- Конвертировать единицы
+- Округлить вверх до целых мешков
 
-## Improving This Approach
+## Улучшение этого подхода
 
-To get better reasoning:
-1. **Use larger models**: 7B+ parameters
-2. **Add step-by-step prompting**: "Show your work"
-3. **Provide tools**: Give the model a calculator
-4. **Use chain-of-thought**: Encourage explicit reasoning
-5. **Verify answers**: Run multiple times or use multiple models
+Для лучших рассуждений:
+1. **Используйте более крупные модели**: 7B+ параметров
+2. **Добавьте пошаговый промптинг**: «Show your work»
+3. **Предоставьте инструменты**: Дайте модели калькулятор
+4. **Используйте цепочку рассуждений**: Поощряйте явные рассуждения
+5. **Верифицируйте ответы**: Запускайте несколько раз или используйте несколько моделей
 
-The react-agent example demonstrates some of these improvements.
+Пример react-agent демонстрирует некоторые из этих улучшений.

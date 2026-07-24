@@ -1,10 +1,10 @@
-## Tree of Thought: Motivation analysis of a person
+## Дерево рассуждений: Анализ мотивации человека
 
-**Idea:** A person shows puzzling behavior. The agent explores multiple psychological explanations in parallel, scores them, and expands only the strongest hypothesis into the final analysis.
+**Идея:** Человек демонстрирует загадочное поведение. Агент исследует несколько психологических объяснений параллельно, оценивает их и расширяет только самую сильную гипотезу до финального анализа.
 
 ---
 
-### Visual tree
+### Визуальное дерево
 
 ```text
 [Behavior: "Person leaves secure job without a clear plan"]
@@ -23,75 +23,75 @@
 
 ---
 
-### What Example 12 demonstrates
+### Что демонстрирует пример 12
 
-1. **Branch:** Build four competing psychological hypotheses.
-2. **Score:** Evaluate each hypothesis independently.
-3. **Prune:** Keep only the highest-scoring branch.
-4. **Conclusion:** Produce a final analysis from the winner only.
+1. **Ветвление:** Построение четырёх конкурирующих психологических гипотез.
+2. **Оценка:** Независимая оценка каждой гипотезы.
+3. **Обрезка:** Сохранение только ветки с наивысшим баллом.
+4. **Заключение:** Формирование финального анализа только на основе победителя.
 
-This intentionally highlights both ToT's strength (structured exploration) and weakness (information loss after pruning).
-
----
-
-### The three core principles in code
-
-| Principle | What happens in code |
-|---|---|
-| Branching | `developHypothesis()` creates one hypothesis per lens |
-| Evaluation | `scoreHypothesis()` scores each hypothesis |
-| Pruning | `pruneHypotheses()` discards all non-winners |
+Это намеренно подчёркивает как сильную сторону ToT (структурированное исследование), так и слабую (потеря информации после обрезки).
 
 ---
 
-### Structural downside shown explicitly
+### Три ключевых принципа в коде
 
-At the end, the console prints what got discarded.  
-Those branches may contain corrective insights, but they do not influence the final conclusion anymore.
-
-That is the core limitation of strict ToT pruning.
+| Принцип | Что происходит в коде |
+|---------|----------------------|
+| Ветвление | `developHypothesis()` создаёт одну гипотезу на each lens |
+| Оценка | `scoreHypothesis()` оценивает каждую гипотезу |
+| Обрезка | `pruneHypotheses()` отбрасывает всех проигравших |
 
 ---
 
-### When to use ToT in real work
+### Структурный недостаток, показанный явно
 
-Use Tree of Thought when you need a clear winner and a simple decision path.
+В конце консоль печатает, что было отброшено.  
+Эти ветки могут содержать корректирующие выводы, но больше не влияют на финальное заключение.
 
-#### System admin mental model
+Это ключевое ограничение строгой обрезки ToT.
 
-You get a production alert: API latency jumped from 200 ms to 2 s after a release.
+---
 
-- **Branches:** DB saturation, cache miss storm, or noisy-neighbor network issue.
-- **Score:** Each branch gets evidence-based scoring from dashboards and logs.
-- **Prune:** Pick the highest-confidence cause (for example cache collapse).
-- **Act:** Run one remediation path first (for example emergency cache warmup + TTL rollback).
+### Когда использовать ToT в реальной работе
 
-Why ToT fits: incident response often needs one fast, auditable decision path instead of maintaining many parallel remediation tracks.
+Используйте Дерево рассуждений, когда нужен ясный победитель и простой путь решения.
 
-#### Developer mental model
+#### Ментальная модель системного администратора
 
-You need to speed up a slow endpoint before a launch.
+Вы получаете production-алерт: латентность API прыгнула с 200 мс до 2 с после релиза.
 
-- **Branches:** add Redis caching, rewrite query with better indexes, or precompute data asynchronously.
-- **Score:** Evaluate by implementation effort, risk, expected gain, and testability.
-- **Prune:** Select one strategy to implement now.
-- **Act:** Ship the chosen change and measure.
+- **Ветки:** Насыщение БД, шторм промахов кэша или проблема «шумного соседа» в сети.
+- **Оценка:** Каждая ветка получает оценку на основе доказательств из дашбордов и логов.
+- **Обрезка:** Выбор причины с наивысшей уверенностью (например, крах кэша).
+- **Действие:** Запуск одного пути исправления (например, аварийный прогрев кэша + откат TTL).
 
-Why ToT fits: when deadlines are near, teams usually need one implementation winner, not a combined architecture experiment.
+Почему ToT подходит: Реагирование на инциденты часто требует одного быстрого, аудируемого пути решения вместо поддержки множества параллельных треков исправлений.
 
-#### AI agent creator mental model
+#### Ментальная модель разработчика
 
-You are building an autonomous coding agent that must choose a fix strategy.
+Вам нужно ускорить медленный эндпоинт перед запуском.
 
-- **Branches:** minimal patch, deeper refactor, or rollback + guardrail.
-- **Score:** Rank by failure risk, blast radius, and confidence from repo evidence.
-- **Prune:** Keep one execution plan.
-- **Act:** Execute, verify, and report.
+- **Ветки:** Добавить Redis-кэширование, переписать запрос с лучшими индексами или предвычислить данные асинхронно.
+- **Оценка:** По усилиям реализации, риску, ожидаемой выгоде и тестируемости.
+- **Обрезка:** Выбор одной стратегии для реализации сейчас.
+- **Действие:** Деплой выбранного изменения и измерение.
 
-Why ToT fits: you get predictable behavior, lower token/tool cost, and easier postmortems because the agent follows one explicit plan.
+Почему ToT подходит: Когда дедлайны близки, командам обычно нужен один победитель реализации, а не комбинированный архитектурный эксперимент.
 
-ToT is strongest when:
+#### Ментальная модель создателя AI-агентов
 
-- time is limited,
-- the output should be one actionable direction,
-- and the cost of keeping many alternatives alive is higher than the risk of losing nuance.
+Вы создаёте автономного кодирующего агента, который должен выбрать стратегию исправления.
+
+- **Ветки:** Минимальный патч, более глубокий рефакторинг или откат + ограничители.
+- **Оценка:** По риску падения, радиусу поражения и уверенности из доказательств в репо.
+- **Обрезка:** Сохранение одного плана исполнения.
+- **Действие:** Исполнение, верификация и отчёт.
+
+Почему ToT подходит: Вы получаете предсказуемое поведение, меньшую стоимость токенов/инструментов и более простые postmortems, потому что агент следует одному явному плану.
+
+ToT наиболее силён когда:
+
+- время ограничено,
+- вывод должен быть одним пригодным для действий направлением,
+- и стоимость содержания множества альтернатив выше риска потери нюансов.
